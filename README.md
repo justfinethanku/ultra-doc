@@ -13,43 +13,56 @@
 
 ---
 
+## Quick Start
+
+### For Claude Code Users (Self-Install)
+
+> **Claude, install this plugin:**
+> ```
+> /plugin install ultra-doc@github:justfinethanku/ultra-doc
+> ```
+
+### Manual Installation
+
+```bash
+# Method 1: Install from GitHub (Recommended)
+/plugin install ultra-doc@github:justfinethanku/ultra-doc
+
+# Method 2: Local marketplace
+/plugin install ultra-doc@local-plugins
+```
+
+> [!WARNING]
+> Requires Node.js 14+ for automation scripts
+
+### Usage
+
+```bash
+# First run (installs documentation system)
+/llm-docs
+
+# Subsequent runs (refreshes all artifacts)
+/llm-docs
+```
+
+---
+
 ## Table of Contents
 
-- [Ultra-Doc: LLM-Optimized Documentation System for Claude Code](#ultra-doc-llm-optimized-documentation-system-for-claude-code)
-  - [Table of Contents](#table-of-contents)
-  - [What is Ultra-Doc?](#what-is-ultra-doc)
-  - [Visual Overview](#visual-overview)
-    - [Documentation Architecture](#documentation-architecture)
-    - [Token Flow Comparison](#token-flow-comparison)
-  - [Examples](#examples)
-    - [Example 1: Small Project (Minimal Setup)](#example-1-small-project-minimal-setup)
-    - [Example 2: Production App (Standard Setup)](#example-2-production-app-standard-setup)
-    - [Example 3: Enterprise Monorepo (Comprehensive Setup)](#example-3-enterprise-monorepo-comprehensive-setup)
-  - [Comparison: With vs Without Ultra-Doc](#comparison-with-vs-without-ultra-doc)
-    - [Without Ultra-Doc (Traditional Approach):](#without-ultra-doc-traditional-approach)
-    - [With Ultra-Doc:](#with-ultra-doc)
-  - [How It Works](#how-it-works)
-    - [Setup Level Decision Tree](#setup-level-decision-tree)
-    - [Four-Phase Protocol](#four-phase-protocol)
-    - [Pipeline Execution Flow](#pipeline-execution-flow)
-  - [Why This Matters](#why-this-matters)
-    - [Before Ultra-Doc:](#before-ultra-doc)
-    - [With Ultra-Doc:](#with-ultra-doc-1)
-  - [Token Economics](#token-economics)
-    - [Investment vs Returns](#investment-vs-returns)
-    - [Detailed Breakdown](#detailed-breakdown)
-    - [Token Savings Over Time](#token-savings-over-time)
-  - [Key Benefits](#key-benefits)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [What Happens on First Run](#what-happens-on-first-run)
-  - [Plugin Structure](#plugin-structure)
-  - [Contributing](#contributing)
-  - [Security](#security)
-  - [Version](#version)
-    - [v1.0.0 (2025-01-15)](#v100-2025-01-15)
-  - [Origin \& Community](#origin--community)
-  - [Support](#support)
+- [Quick Start](#quick-start)
+- [What is Ultra-Doc?](#what-is-ultra-doc)
+- [Visual Overview](#visual-overview)
+- [Examples](#examples)
+- [Comparison: With vs Without Ultra-Doc](#comparison-with-vs-without-ultra-doc)
+- [How It Works](#how-it-works)
+- [Why This Matters](#why-this-matters)
+- [Token Economics](#token-economics)
+- [Key Benefits](#key-benefits)
+- [Plugin Structure](#plugin-structure)
+- [Contributing](#contributing)
+- [Security](#security)
+- [Version](#version)
+- [Support](#support)
 
 ---
 
@@ -586,32 +599,7 @@ graph LR
 
 ---
 
-## Installation
-
-```bash
-# Method 1: Install from GitHub (Recommended)
-/plugin install ultra-doc@github:jonathanedwards/ultra-doc
-
-# Method 2: Local marketplace
-/plugin install ultra-doc@local-plugins
-```
-
-> [!WARNING]
-> Requires Node.js 14+ for automation scripts
-
----
-
-## Usage
-
-```bash
-# First run (installs documentation system)
-/llm-docs
-
-# Subsequent runs (refreshes all artifacts)
-/llm-docs
-```
-
-### What Happens on First Run
+## What Happens on First Run
 
 ```mermaid
 sequenceDiagram
