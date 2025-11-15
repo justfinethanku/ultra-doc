@@ -17,10 +17,15 @@
 
 ### For Claude Code Users (Self-Install)
 
-> **Claude, install this plugin:**
-> ```
-> /plugin install ultra-doc@github:justfinethanku/ultra-doc
-> ```
+**Copy this entire prompt and paste it into Claude Code:**
+
+```
+Install the ultra-doc plugin from GitHub: /plugin install ultra-doc@github:justfinethanku/ultra-doc
+
+This plugin creates LLM-optimized documentation systems with JSON overlays (SECTIONS.json, CODE_POINTERS.json, RELATIONSHIPS.json) that reduce AI context usage by 60-90%.
+
+After you install it, tell me how it works and what the /llm-docs command does.
+```
 
 ### Manual Installation
 
