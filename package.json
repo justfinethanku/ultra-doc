@@ -1,0 +1,40 @@
+{
+  "name": "ultra-doc",
+  "version": "1.0.0",
+  "description": "LLM-optimized documentation system for Claude Code - creates structured documentation with JSON overlays for token-efficient AI context",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"This is a Claude Code plugin - install via /plugin install\" && exit 0"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "plugin",
+    "documentation",
+    "llm",
+    "ai",
+    "json-overlays",
+    "token-optimization",
+    "developer-tools"
+  ],
+  "author": {
+    "name": "Jonathan Edwards",
+    "url": "https://github.com/jonathanedwards"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonathanedwards/ultra-doc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonathanedwards/ultra-doc/issues"
+  },
+  "homepage": "https://github.com/jonathanedwards/ultra-doc#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "private": false
+}

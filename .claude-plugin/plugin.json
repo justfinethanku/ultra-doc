@@ -1,0 +1,22 @@
+{
+  "name": "ultra-doc",
+  "description": "Install and maintain LLM-optimized documentation with CLAUDE.md and JSON overlays for token-efficient AI context. Creates structured docs that help AI assistants understand your codebase.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jonathan Edwards",
+    "url": "https://github.com/jonathanedwards"
+  },
+  "homepage": "https://github.com/jonathanedwards/ultra-doc",
+  "repository": "https://github.com/jonathanedwards/ultra-doc",
+  "license": "MIT",
+  "keywords": [
+    "documentation",
+    "llm",
+    "ai",
+    "claude",
+    "context",
+    "token-optimization",
+    "json-overlays",
+    "developer-tools"
+  ]
+}

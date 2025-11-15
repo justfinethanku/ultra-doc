@@ -1,0 +1,52 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+coverage/
+*.lcov
+.nyc_output
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Development/planning documents (not needed for plugin distribution)
+plan_for_documentation_slash_command.md
+Plugins-Claude-Code-Docs.md
+skill_authoring_best_practices.md
+Agent-Skills.md
+
+# Generated documentation (in target repos, not in this plugin)
+# Uncomment these if testing in a real repo:
+# CLAUDE.md
+# .llm-docs.config.json
+# context_for_llms/
+# scripts/llm-docs/
