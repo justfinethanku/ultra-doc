@@ -29,11 +29,15 @@ After you install it, tell me how it works and what the /llm-docs command does.
 
 ### Manual Installation
 
-```bash
-# Method 1: Install from GitHub (Recommended)
-/plugin install ultra-doc@github:justfinethanku/ultra-doc
+**Method 1: Install from GitHub (Recommended)**
 
-# Method 2: Local marketplace
+```bash
+/plugin install ultra-doc@github:justfinethanku/ultra-doc
+```
+
+**Method 2: Local Marketplace**
+
+```bash
 /plugin install ultra-doc@local-plugins
 ```
 
@@ -42,11 +46,15 @@ After you install it, tell me how it works and what the /llm-docs command does.
 
 ### Usage
 
-```bash
-# First run (installs documentation system)
-/llm-docs
+**First run (installs documentation system):**
 
-# Subsequent runs (refreshes all artifacts)
+```bash
+/llm-docs
+```
+
+**Subsequent runs (refreshes all artifacts):**
+
+```bash
 /llm-docs
 ```
 
