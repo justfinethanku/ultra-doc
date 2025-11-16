@@ -19,7 +19,7 @@
 
 Ultra-Doc is a Claude Code plugin that creates and maintains an LLM-optimized documentation system in any repository. Instead of AI assistants reading entire files (consuming thousands of tokens), Ultra-Doc generates JSON overlays that enable selective, token-efficient context retrieval.
 
-The `/llm-docs` command transforms scattered documentation into a structured system with:
+The `/ultra-doc` command transforms scattered documentation into a structured system with:
 - Token-counted sections for efficient retrieval
 - Code-to-documentation mappings
 - Dependency graphs and relationships
@@ -27,7 +27,7 @@ The `/llm-docs` command transforms scattered documentation into a structured sys
 - Tool-neutral design (works with any AI assistant)
 
 > [!TIP]
-> Run `/llm-docs` after major code changes to keep AI context fresh and accurate
+> Run `/ultra-doc` after major code changes to keep AI context fresh and accurate
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
@@ -44,7 +44,7 @@ Install the ultra-doc plugin from GitHub: /plugin install ultra-doc@github:justf
 
 This plugin creates LLM-optimized documentation systems with JSON overlays (SECTIONS.json, CODE_POINTERS.json, RELATIONSHIPS.json) that reduce AI context usage by 60-90%.
 
-After you install it, tell me how it works and what the /llm-docs command does.
+After you install it, tell me how it works and what the /ultra-doc command does.
 ```
 
 ### Manual Installation
@@ -66,13 +66,13 @@ After you install it, tell me how it works and what the /llm-docs command does.
 **First run (installs documentation system):**
 
 ```bash
-/llm-docs
+/ultra-doc
 ```
 
 **Subsequent runs (refreshes all artifacts):**
 
 ```bash
-/llm-docs
+/ultra-doc
 ```
 
 <div align="center">
@@ -224,7 +224,7 @@ Total: 3,200 tokens
 
 **Task Input:**
 ```bash
-/llm-docs
+/ultra-doc
 ```
 
 **Complexity:** Low (personal project, <20 files)
@@ -235,7 +235,7 @@ Total: 3,200 tokens
 ```
 your-project/
 ├── CLAUDE.md                       # 79-line overview
-├── .llm-docs.config.json           # Configuration
+├── .ultra-doc.config.json           # Configuration
 └── context_for_llms/
     ├── llms.txt                    # Navigation guide
     ├── INDEX.md                    # File inventory
@@ -266,7 +266,7 @@ graph LR
 
 **Task Input:**
 ```bash
-/llm-docs
+/ultra-doc
 ```
 
 **Complexity:** Medium (team project, 100+ files, multiple modules)
@@ -277,7 +277,7 @@ graph LR
 ```
 production-app/
 ├── CLAUDE.md                       # 234-line comprehensive guide
-├── .llm-docs.config.json           # Configuration
+├── .ultra-doc.config.json           # Configuration
 ├── context_for_llms/
 │   ├── llms.txt                    # AI navigation
 │   ├── INDEX.md                    # File inventory with stats
@@ -288,7 +288,7 @@ production-app/
 │   ├── api-overview.md             # Endpoint documentation
 │   ├── domains-and-modules.md      # Module breakdown
 │   └── development-workflows.md    # Team processes
-└── scripts/llm-docs/               # 8 automation scripts
+└── scripts/ultra-doc/               # 8 automation scripts
 ```
 
 **Key Results:**
@@ -327,7 +327,7 @@ graph LR
 
 **Task Input:**
 ```bash
-/llm-docs
+/ultra-doc
 ```
 
 **Complexity:** High (500+ files, multiple services, complex architecture)
@@ -338,7 +338,7 @@ graph LR
 ```
 enterprise-monorepo/
 ├── CLAUDE.md                       # 350+ line detailed documentation
-├── .llm-docs.config.json           # Full configuration
+├── .ultra-doc.config.json           # Full configuration
 ├── context_for_llms/
 │   ├── llms.txt                    # Service-aware navigation
 │   ├── INDEX.md                    # Comprehensive inventory
@@ -349,7 +349,7 @@ enterprise-monorepo/
 │   ├── api-overview.md             # Full API documentation
 │   ├── domains-and-modules.md      # Service boundaries
 │   └── development-workflows.md    # CI/CD integration
-├── scripts/llm-docs/               # All 8 scripts + CI hooks
+├── scripts/ultra-doc/               # All 8 scripts + CI hooks
 └── .github/workflows/docs.yml      # CI validation
 ```
 
@@ -479,7 +479,7 @@ graph TD
 
 ```mermaid
 graph TB
-    Start([/llm-docs Command]) --> Phase1[Phase 1: Detection<br/>━━━━━━━━━<br/>Check for existing installation<br/>Identify project type<br/>Assess documentation needs]
+    Start([/ultra-doc Command]) --> Phase1[Phase 1: Detection<br/>━━━━━━━━━<br/>Check for existing installation<br/>Identify project type<br/>Assess documentation needs]
 
     Phase1 --> Exists{System<br/>Installed?}
 
@@ -524,7 +524,7 @@ graph LR
 
 | Script | Purpose | Output | Token Impact |
 |--------|---------|--------|--------------|
-| `optimize-for-llms.sh` | Pipeline orchestrator | Runs all scripts in sequence | N/A |
+| `optimize-docs.sh` | Pipeline orchestrator | Runs all scripts in sequence | N/A |
 | `update-timestamps.mjs` | Timestamp maintenance | Updates "Last Updated" fields | Reduces stale context |
 | `generate-section-index.mjs` | Section extraction | SECTIONS.json with token counts | 60-70% reduction |
 | `add-code-pointers.mjs` | Code mapping | CODE_POINTERS.json | Direct navigation to source |
@@ -587,38 +587,6 @@ graph LR
 
 ### Investment vs Returns
 
-```mermaid
-graph TD
-    subgraph "One-Time Investment"
-    I1[Minimal: 400 tokens]
-    I2[Standard: 600 tokens]
-    I3[Comprehensive: 800 tokens]
-    end
-
-    subgraph "Per-Query Cost"
-    Q1[200-400 tokens]
-    Q2[400-800 tokens]
-    Q3[600-1,200 tokens]
-    end
-
-    subgraph "Break-Even Point"
-    B1[After 2-3 queries]
-    B2[After 2-3 queries]
-    B3[After 2-3 queries]
-    end
-
-    I1 --> Q1 --> B1
-    I2 --> Q2 --> B2
-    I3 --> Q3 --> B3
-
-    style I1 fill:#14b8a6,stroke:#0f766e,color:#fff
-    style I2 fill:#14b8a6,stroke:#0f766e,color:#fff
-    style I3 fill:#14b8a6,stroke:#0f766e,color:#fff
-    style B1 fill:#f59e0b,stroke:#d97706,color:#fff
-    style B2 fill:#f59e0b,stroke:#d97706,color:#fff
-    style B3 fill:#f59e0b,stroke:#d97706,color:#fff
-```
-
 ### Detailed Breakdown
 
 | Setup Level | Installation Cost | Per Query Cost | Total After 5 Queries | Traditional Cost | Savings |
@@ -653,47 +621,26 @@ graph LR
 ## Key Benefits
 
 ✅ **Token Efficient** - JSON overlays reduce context usage by 60-90%
+
 ✅ **Progressive Disclosure** - Start with overview, dive deep when needed
+
 ✅ **Tool Neutral** - Works with any AI assistant, not just Claude
+
 ✅ **Auto-Maintained** - Scripts keep documentation fresh
+
 ✅ **Zero Code Generation** - All scripts pre-written and tested
+
 ✅ **Smart Defaults** - ≤3 questions with intelligent defaults
+
 ✅ **Persistent Context** - Survives session restarts
+
 ✅ **Scalable** - From personal projects to enterprise monorepos
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
 </div>
 
-## What Happens on First Run
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant C as Claude
-    participant S as Ultra-Doc
-
-    U->>C: /llm-docs
-    C->>S: Check installation
-    S-->>C: Not installed
-    C->>U: What setup level? (minimal/standard/comprehensive)
-    U->>C: Standard
-    C->>U: Primary audience? (balanced/human/ai/maintainer)
-    U->>C: Balanced
-    C->>S: Install with config
-    S->>S: Copy templates
-    S->>S: Run pipeline
-    S-->>C: ✓ Complete
-    C->>U: Documentation system installed!<br/>Generated: CLAUDE.md, SECTIONS.json, etc.
-
-    rect rgb(20, 184, 166, 0.1)
-    Note over U,C: System ready for use
-    end
-```
-
-<div align="center">
-  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
-</div>
 
 ## Plugin Structure
 
@@ -702,12 +649,12 @@ ultra-doc/
 ├── .claude-plugin/
 │   └── plugin.json                 # Plugin metadata
 ├── commands/
-│   └── llm-docs.md                 # Slash command definition
+│   └── ultra-doc.md                 # Slash command definition
 ├── skills/
-│   └── llm-docs-builder/
+│   └── ultra-doc/
 │       ├── SKILL.md                # Core implementation logic
 │       ├── scripts/                # 8 automation scripts
-│       │   ├── optimize-for-llms.sh
+│       │   ├── optimize-docs.sh
 │       │   ├── generate-section-index.mjs
 │       │   ├── add-code-pointers.mjs
 │       │   ├── render-relationships.mjs
@@ -732,12 +679,12 @@ ultra-doc/
 <details>
 <summary><strong>🔍 What Gets Generated in Your Repository</strong></summary>
 
-When you run `/llm-docs`, Ultra-Doc creates this structure in **your** repository:
+When you run `/ultra-doc`, Ultra-Doc creates this structure in **your** repository:
 
 ```
 your-project/
 ├── CLAUDE.md                       # Main AI documentation
-├── .llm-docs.config.json           # Configuration
+├── .ultra-doc.config.json           # Configuration
 ├── context_for_llms/               # Documentation directory
 │   ├── llms.txt                    # AI navigation guide
 │   ├── INDEX.md                    # File inventory
@@ -748,78 +695,12 @@ your-project/
 │   ├── api-overview.md             # (Standard/Comprehensive)
 │   ├── domains-and-modules.md      # (Standard/Comprehensive)
 │   └── development-workflows.md    # (Standard/Comprehensive)
-└── scripts/llm-docs/               # Automation scripts
+└── scripts/ultra-doc/               # Automation scripts
     └── [8 scripts copied from plugin]
 ```
 
 </details>
 
-<div align="center">
-  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
-</div>
-
-## Contributing
-
-This plugin is designed to evolve through community feedback:
-
-1. **Test on real projects** (not toy examples)
-2. **Document what works and what breaks**
-3. **Propose specific improvements as issues**
-4. **Share your template modifications as PRs**
-
-**Good contributions:**
-- "SECTIONS.json generation fails for [language], here's the fix"
-- "Added [project type] detection, improves accuracy for [use case]"
-- "Token counting is off by X% for [file type], try this formula"
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
-
-<div align="center">
-  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
-</div>
-
-## Security
-
-This plugin is safe to use:
-
-✅ **No credentials required** - Pure local operations
-✅ **No API keys needed** - No external services
-✅ **No network access** - Everything runs locally
-✅ **No data collection** - Your code stays private
-✅ **Pure documentation** - Generates markdown (commonly referred to as Mike Dion files) and JSON only
-✅ **Read-only analysis** - Never modifies source code
-
-**The plugin uses only safe, local tools:**
-- File reading (your documentation)
-- JSON generation (overlay files)
-- Markdown creation (documentation)
-- Directory traversal (structure analysis)
-
-<div align="center">
-  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
-</div>
-
-## Version
-
-**Current Version:** v1.0.0 - Initial Release
-
-<details>
-<summary><strong>📅 Changelog</strong></summary>
-
-### v1.0.0 (2025-01-15)
-- Initial release
-- Three-tier setup system (minimal, standard, comprehensive)
-- JSON overlay generation (SECTIONS, CODE_POINTERS, RELATIONSHIPS)
-- 8 automation scripts for pipeline execution
-- 7 documentation templates
-- Token counting and optimization (60-90% reduction)
-- Full Claude Code plugin compatibility
-- Progressive disclosure architecture
-- Tool-neutral design
-
-</details>
-
-See [CHANGELOG.md](CHANGELOG.md) for complete version history.
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
@@ -837,9 +718,7 @@ This is v1.0.0 of what aims to become the standard documentation generator for A
 
 ## Support
 
-- **Issues:** [GitHub Issues](https://github.com/jonathanedwards/ultra-doc/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/jonathanedwards/ultra-doc/discussions)
-- **Author:** [Jonathan Edwards](https://github.com/jonathanedwards)
+- **Author:** [Jonathan Edwards](https://limitededitionjonathan.substack.com/)
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">

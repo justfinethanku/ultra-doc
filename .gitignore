@@ -47,6 +47,6 @@ Agent-Skills.md
 # Generated documentation (in target repos, not in this plugin)
 # Uncomment these if testing in a real repo:
 # CLAUDE.md
-# .llm-docs.config.json
+# .ultra-doc.config.json
 # context_for_llms/
-# scripts/llm-docs/
+# scripts/ultra-doc/
