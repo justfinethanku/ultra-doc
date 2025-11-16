@@ -10,6 +10,25 @@
 ![Token Savings](https://img.shields.io/badge/Token_Savings-60--90%25-gold?style=for-the-badge)
 
 **Generate token-efficient, AI-readable documentation with JSON overlays that reduce context usage by 60-90%**
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
+
+## Table of Contents
+
+- [What is Ultra-Doc?](#what-is-ultra-doc)
+- [Quick Start](#quick-start)
+- [Visual Overview](#visual-overview)
+- [Examples](#examples)
+- [Comparison: With vs Without Ultra-Doc](#comparison-with-vs-without-ultra-doc)
+- [How It Works](#how-it-works)
+- [Why This Matters](#why-this-matters)
+- [Token Economics](#token-economics)
+- [Key Benefits](#key-benefits)
+- [Plugin Structure](#plugin-structure)
+- [Support](#support)
+
+
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
@@ -35,7 +54,8 @@ The `/ultra-doc` command transforms scattered documentation into a structured sy
 
 ## Quick Start
 
-### For Claude Code Users (Self-Install)
+### Make Claude Code install Ultra-Doc
+
 
 **Copy this entire prompt and paste it into Claude Code:**
 
@@ -47,7 +67,7 @@ This plugin creates LLM-optimized documentation systems with JSON overlays (SECT
 After you install it, tell me how it works and what the /ultra-doc command does.
 ```
 
-### Manual Installation
+### Do it manually (if you hate yourself) 
 
 **Method 1: Install from GitHub (Recommended)**
 
@@ -74,31 +94,6 @@ After you install it, tell me how it works and what the /ultra-doc command does.
 ```bash
 /ultra-doc
 ```
-
-<div align="center">
-  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
-</div>
-
-## Table of Contents
-
-- [Quick Start](#quick-start)
-- [What is Ultra-Doc?](#what-is-ultra-doc)
-- [Visual Overview](#visual-overview)
-- [Examples](#examples)
-- [Comparison: With vs Without Ultra-Doc](#comparison-with-vs-without-ultra-doc)
-- [How It Works](#how-it-works)
-- [Why This Matters](#why-this-matters)
-- [Token Economics](#token-economics)
-- [Key Benefits](#key-benefits)
-- [Plugin Structure](#plugin-structure)
-- [Contributing](#contributing)
-- [Security](#security)
-- [Version](#version)
-- [Support](#support)
-
-<div align="center">
-  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
-</div>
 
 ## Visual Overview
 
