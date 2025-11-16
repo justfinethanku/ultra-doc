@@ -64,7 +64,10 @@ The `/ultra-doc` command transforms your repository into a living documentation 
 **Copy this entire prompt and paste it into Claude Code:**
 
 ```
-Install the ultra-doc plugin from GitHub: /plugin install ultra-doc@github:justfinethanku/ultra-doc
+Install the ultra-doc plugin from GitHub:
+
+/plugin marketplace add justfinethanku/ultra-doc
+/plugin install ultra-doc@ultra-doc-marketplace
 
 This plugin creates a self-healing documentation system that automatically detects when docs
 become stale, validates accuracy against actual code, fixes errors automatically, and finds
@@ -78,7 +81,11 @@ After you install it, tell me how it works and what the /ultra-doc command does.
 **Method 1: Install from GitHub (Recommended)**
 
 ```bash
-/plugin install ultra-doc@github:justfinethanku/ultra-doc
+# Add the marketplace
+/plugin marketplace add justfinethanku/ultra-doc
+
+# Install the plugin
+/plugin install ultra-doc@ultra-doc-marketplace
 ```
 
 **Method 2: Local Marketplace**
