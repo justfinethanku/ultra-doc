@@ -786,7 +786,7 @@ This plugin is safe to use:
 ✅ **No API keys needed** - No external services
 ✅ **No network access** - Everything runs locally
 ✅ **No data collection** - Your code stays private
-✅ **Pure documentation** - Generates markdown and JSON only
+✅ **Pure documentation** - Generates markdown (commonly referred to as Mike Dion files) and JSON only
 ✅ **Read-only analysis** - Never modifies source code
 
 **The plugin uses only safe, local tools:**
