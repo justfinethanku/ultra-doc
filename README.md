@@ -149,36 +149,62 @@ graph TB
 
 ### Token Flow Comparison
 
-```mermaid
-sequenceDiagram
-    participant U as 👤 User
-    participant C as 🤖 Claude
-    participant F as 📁 Files
+<table>
+<tr>
+<td width="50%" valign="top">
 
-    rect rgb(220, 38, 38, 0.1)
-    Note over U,F: ❌ Without Ultra-Doc: 18,000 tokens
-    U->>C: Explain authentication
-    C->>F: Read 15 files
-    F-->>C: 8,000 tokens 😰
-    U->>C: Show API endpoints
-    C->>F: Read 12 more files
-    F-->>C: 6,000 tokens 😓
-    U->>C: Database connection?
-    C->>F: Read 8 more files
-    F-->>C: 4,000 tokens 😫
-    end
+**❌ Without Ultra-Doc**
 
-    rect rgb(20, 184, 166, 0.1)
-    Note over U,F: ✅ With Ultra-Doc: 3,200 tokens
-    U->>C: Explain authentication
-    C->>F: Query SECTIONS.json
-    F-->>C: 2,400 tokens (targeted) 🎯
-    U->>C: Show API endpoints
-    C->>F: Query cached sections
-    F-->>C: 800 tokens (reuse context) ⚡
-    Note over U,C: 82% token reduction!
-    end
 ```
+Query 1: "Explain authentication"
+├─ Read 15 files
+└─ 8,000 tokens
+
+Query 2: "Show API endpoints"
+├─ Read 12 more files
+└─ 6,000 tokens
+
+Query 3: "Database connection?"
+├─ Read 8 more files
+└─ 4,000 tokens
+
+Total: 18,000 tokens
+```
+
+**Problems:**
+- Reads entire files each time
+- No context reuse
+- Context window filled quickly
+
+</td>
+<td width="50%" valign="top">
+
+**✅ With Ultra-Doc**
+
+```
+Query 1: "Explain authentication"
+├─ Query SECTIONS.json
+└─ 2,400 tokens (targeted sections)
+
+Query 2: "Show API endpoints"
+├─ Query cached sections
+└─ 800 tokens (reuse context)
+
+Query 3: "Database connection?"
+├─ Already in context
+└─ 0 additional tokens
+
+Total: 3,200 tokens
+```
+
+**Benefits:**
+- Selective section retrieval
+- Context reuse across queries
+- **82% token reduction**
+
+</td>
+</tr>
+</table>
 
 ---
 
