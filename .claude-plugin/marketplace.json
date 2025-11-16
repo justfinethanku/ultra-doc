@@ -1,0 +1,14 @@
+{
+  "name": "ultra-doc-marketplace",
+  "owner": {
+    "name": "Jonathan Edwards",
+    "url": "https://github.com/justfinethanku"
+  },
+  "plugins": [
+    {
+      "name": "ultra-doc",
+      "source": "./",
+      "description": "AI-driven documentation system that writes, maintains, and validates documentation automatically. Detects code changes, finds errors, and keeps docs perfectly synced with your codebase."
+    }
+  ]
+}
