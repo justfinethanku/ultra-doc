@@ -41,9 +41,6 @@ After you install it, tell me how it works and what the /llm-docs command does.
 /plugin install ultra-doc@local-plugins
 ```
 
-> [!WARNING]
-> Requires Node.js 14+ for automation scripts
-
 ### Usage
 
 **First run (installs documentation system):**
