@@ -75,7 +75,9 @@ After you install it, tell me how it works and what the /llm-docs command does.
 /llm-docs
 ```
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ## Table of Contents
 
@@ -212,7 +214,9 @@ Total: 3,200 tokens
 </tr>
 </table>
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ## Examples
 
@@ -254,7 +258,9 @@ graph LR
 
 **Savings: 75%** 🎉
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ### Example 2: Production App (Standard Setup)
 
@@ -313,7 +319,9 @@ graph LR
 - With Ultra-Doc: ~8,500 tokens (targeted section retrieval)
 - **Savings: 81%** 🚀
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ### Example 3: Enterprise Monorepo (Comprehensive Setup)
 
@@ -387,7 +395,9 @@ graph TD
 > [!IMPORTANT]
 > Ultra-Doc makes enterprise-scale projects manageable within Claude's context window
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ## Comparison: With vs Without Ultra-Doc
 
@@ -416,7 +426,9 @@ Claude: "Let me find the database layer..."
 
 **Result:** 3 iterations, ~18,000 tokens, incomplete understanding
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ### With Ultra-Doc:
 
@@ -439,7 +451,9 @@ Claude: [Already has context map, fetches API sections]
 
 **Savings:** 82% fewer tokens, instant navigation, persistent context
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ## How It Works
 
@@ -521,7 +535,9 @@ graph LR
 
 </details>
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ## Why This Matters
 
@@ -540,7 +556,9 @@ graph LR
 - Documentation gets stale quickly
 - Every session starts from scratch
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ### With Ultra-Doc:
 ```
@@ -561,7 +579,9 @@ graph LR
 > [!NOTE]
 > The average developer session with Ultra-Doc saves **15,000-40,000 tokens** compared to traditional file reading
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ## Token Economics
 
@@ -626,7 +646,9 @@ graph LR
     style Q5 fill:#f59e0b,stroke:#d97706,color:#fff
 ```
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ## Key Benefits
 
@@ -639,7 +661,9 @@ graph LR
 ✅ **Persistent Context** - Survives session restarts
 ✅ **Scalable** - From personal projects to enterprise monorepos
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ## What Happens on First Run
 
@@ -667,7 +691,9 @@ sequenceDiagram
     end
 ```
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ## Plugin Structure
 
@@ -728,7 +754,9 @@ your-project/
 
 </details>
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ## Contributing
 
@@ -746,7 +774,9 @@ This plugin is designed to evolve through community feedback:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ## Security
 
@@ -765,7 +795,9 @@ This plugin is safe to use:
 - Markdown creation (documentation)
 - Directory traversal (structure analysis)
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ## Version
 
@@ -789,7 +821,9 @@ This plugin is safe to use:
 
 See [CHANGELOG.md](CHANGELOG.md) for complete version history.
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ## Origin & Community
 
@@ -797,7 +831,9 @@ Created by **Jonathan Edwards** as part of the Claude Code plugin ecosystem init
 
 This is v1.0.0 of what aims to become the standard documentation generator for AI-assisted development. Community contributions welcome to improve token efficiency and documentation quality.
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ## Support
 
@@ -805,7 +841,9 @@ This is v1.0.0 of what aims to become the standard documentation generator for A
 - **Discussions:** [GitHub Discussions](https://github.com/jonathanedwards/ultra-doc/discussions)
 - **Author:** [Jonathan Edwards](https://github.com/jonathanedwards)
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 <div align="center">
 
