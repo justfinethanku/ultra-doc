@@ -109,69 +109,6 @@ After you install it, tell me how it works and what the /ultra-doc command does.
 
 ### Documentation Architecture
 
-```mermaid
-graph TB
-    subgraph "Entry Point"
-    CLAUDE[📄 CLAUDE.md<br/>Main Documentation]
-    end
-
-    subgraph "Navigation Layer"
-    llms[🧭 llms.txt<br/>AI Navigation]
-    INDEX[📑 INDEX.md<br/>File Inventory]
-    end
-
-    subgraph "JSON Overlays"
-    SECTIONS[🔍 SECTIONS.json<br/>Token-Optimized<br/>Content Sections]
-    POINTERS[🔗 CODE_POINTERS.json<br/>Documentation to<br/>Source Mappings]
-    RELATIONS[📊 RELATIONSHIPS.json<br/>Dependency Graph]
-    end
-
-    subgraph "Health Tracking"
-    STATE[📋 DOC_STATE.json<br/>Health Metrics<br/>Staleness Detection]
-    COVERAGE[📊 COVERAGE.json<br/>Code Coverage<br/>Gap Analysis]
-    VALIDATION[✅ VALIDATION.json<br/>Accuracy Results<br/>Error Reports]
-    end
-
-    subgraph "Context Documents"
-    arch[🏗️ architecture.md]
-    api[🌐 api-overview.md]
-    domains[📦 domains-and-modules.md]
-    workflows[⚙️ development-workflows.md]
-    end
-
-    subgraph "Source Code"
-    src[💻 Your Source Files]
-    deps[📚 Dependencies]
-    end
-
-    CLAUDE --> llms
-    CLAUDE --> INDEX
-    CLAUDE --> SECTIONS
-    CLAUDE --> POINTERS
-    CLAUDE --> RELATIONS
-
-    SECTIONS --> arch
-    SECTIONS --> api
-    SECTIONS --> domains
-    SECTIONS --> workflows
-
-    POINTERS --> src
-    POINTERS --> STATE
-    POINTERS --> COVERAGE
-    POINTERS --> VALIDATION
-    RELATIONS --> deps
-
-    style CLAUDE fill:#14b8a6,stroke:#0f766e,color:#fff
-    style SECTIONS fill:#f59e0b,stroke:#d97706,color:#fff
-    style POINTERS fill:#f59e0b,stroke:#d97706,color:#fff
-    style RELATIONS fill:#f59e0b,stroke:#d97706,color:#fff
-    style STATE fill:#14b8a6,stroke:#0f766e,color:#fff
-    style COVERAGE fill:#14b8a6,stroke:#0f766e,color:#fff
-    style VALIDATION fill:#14b8a6,stroke:#0f766e,color:#fff
-    style llms fill:#14b8a6,stroke:#0f766e,color:#fff
-    style INDEX fill:#14b8a6,stroke:#0f766e,color:#fff
-```
-
 ### Token Flow Comparison
 
 <table>
@@ -245,19 +182,6 @@ Total: 3,200 tokens
 
 Ultra-Doc uses a sophisticated pipeline of AI and deterministic scripts to maintain documentation health:
 
-```mermaid
-graph LR
-    Start([Code Change]) --> Track[Track Changes<br/>━━━━━━━━━<br/>Monitors git history<br/>Maps to affected docs]
-    Track --> Analyze[Analyze State<br/>━━━━━━━━━<br/>Health metrics<br/>Staleness risk]
-    Analyze --> Coverage[Analyze Coverage<br/>━━━━━━━━━<br/>Find undocumented<br/>code]
-    Coverage --> Validate[Validate Accuracy<br/>━━━━━━━━━<br/>AI reads code<br/>Detects errors]
-    Validate --> Fix[Auto-Fix<br/>━━━━━━━━━<br/>Repairs errors<br/>Updates docs]
-    Fix --> Done([✓ Healthy Docs])
-
-    style Start fill:#14b8a6,stroke:#0f766e,color:#fff
-    style Done fill:#f59e0b,stroke:#d97706,color:#fff
-```
-
 **1. Code Change Tracking**
 - Monitors git history for file modifications
 - Maps changed files to documentation via CODE_POINTERS.json
@@ -299,20 +223,6 @@ graph LR
 ### Narrow Path Validation Strategy
 
 Ultra-Doc uses an innovative **narrow path validation** approach that makes accuracy checking "pretty easy":
-
-```mermaid
-graph TD
-    Start[CODE_POINTERS.json<br/>Explicit doc → code links] --> Check{File changed<br/>since last<br/>validation?}
-    Check -->|No| Skip[Skip - Still Valid]
-    Check -->|Yes| Read[AI reads both:<br/>• Doc section<br/>• Source code]
-    Read --> Compare[AI compares:<br/>Does doc match code?]
-    Compare -->|Match| Update[Update lastValidated<br/>timestamp]
-    Compare -->|Mismatch| Error[Add to VALIDATION.json<br/>with fix details]
-
-    style Start fill:#14b8a6,stroke:#0f766e,color:#fff
-    style Error fill:#dc2626,stroke:#991b1b,color:#fff
-    style Update fill:#f59e0b,stroke:#d97706,color:#fff
-```
 
 **Why This Works:**
 - No blind searching - follows explicit links
@@ -591,14 +501,9 @@ your-project/
 - Validation runs on demand
 
 **Token Usage:**
-```mermaid
-graph LR
-    A[Traditional<br/>2,400 tokens] -->|Ultra-Doc| B[Optimized<br/>600 tokens]
-    style A fill:#dc2626,stroke:#991b1b,color:#fff
-    style B fill:#14b8a6,stroke:#0f766e,color:#fff
-```
-
-**Savings: 75%** 🎉
+- Traditional: 2,400 tokens
+- Ultra-Doc Optimized: 600 tokens
+- **Savings: 75%**
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
@@ -646,21 +551,15 @@ production-app/
 - Accuracy validation catches errors
 
 **Execution Sequence:**
-
-```mermaid
-graph LR
-    A[1. Detect] --> B[2. Configure]
-    B --> C[3. Copy Templates]
-    C --> D[4. Track Changes]
-    D --> E[5. Analyze State]
-    E --> F[6. Analyze Coverage]
-    F --> G[7. Validate Accuracy]
-    G --> H[8. Auto-Fix Errors]
-    H --> I[✓ Complete]
-
-    style A fill:#14b8a6,stroke:#0f766e,color:#fff
-    style I fill:#f59e0b,stroke:#d97706,color:#fff
-```
+1. Detect
+2. Configure
+3. Copy Templates
+4. Track Changes
+5. Analyze State
+6. Analyze Coverage
+7. Validate Accuracy
+8. Auto-Fix Errors
+9. Complete
 
 **Token Usage:**
 - Without Ultra-Doc: ~45,000 tokens (reading all docs + source)
@@ -715,31 +614,11 @@ enterprise-monorepo/
 
 **Complexity vs Token Savings:**
 
-```mermaid
-graph TD
-    subgraph "Project Complexity"
-    P1[Small Project<br/>< 20 files]
-    P2[Medium Project<br/>20-200 files]
-    P3[Large Project<br/>200+ files]
-    end
-
-    subgraph "Token Savings"
-    S1[75% Savings<br/>600 tokens/query]
-    S2[81% Savings<br/>8,500 tokens/query]
-    S3[87.5% Savings<br/>15,000 tokens/query]
-    end
-
-    P1 --> S1
-    P2 --> S2
-    P3 --> S3
-
-    style P1 fill:#14b8a6,stroke:#0f766e,color:#fff
-    style P2 fill:#14b8a6,stroke:#0f766e,color:#fff
-    style P3 fill:#14b8a6,stroke:#0f766e,color:#fff
-    style S1 fill:#f59e0b,stroke:#d97706,color:#fff
-    style S2 fill:#f59e0b,stroke:#d97706,color:#fff
-    style S3 fill:#f59e0b,stroke:#d97706,color:#fff
-```
+| Project Complexity | Token Savings |
+|-------------------|---------------|
+| Small Project (< 20 files) | 75% Savings (600 tokens/query) |
+| Medium Project (20-200 files) | 81% Savings (8,500 tokens/query) |
+| Large Project (200+ files) | 87.5% Savings (15,000 tokens/query) |
 
 **Token Usage:**
 - Without Ultra-Doc: ~120,000 tokens (impossible in single context)
@@ -757,83 +636,65 @@ graph TD
 
 ### Interactive Decision Tree
 
-```mermaid
-graph TD
-    Start([/ultra-doc]) --> Installed{System<br/>Installed?}
+**Workflow:**
 
-    Installed -->|No| Install[Install System<br/>━━━━━━━━━<br/>Ask 3 questions<br/>Create structure<br/>Run initial analysis]
-
-    Installed -->|Yes| Analyze[Analyze Current State<br/>━━━━━━━━━<br/>Read health metrics<br/>Check for changes<br/>Detect gaps & errors]
-
-    Install --> Analyze
-
-    Analyze --> Present[Present Findings<br/>━━━━━━━━━<br/>Show health status<br/>List errors/gaps<br/>Display metrics]
-
-    Present --> Menu{What to do?}
-
-    Menu -->|Fix Errors| Fix[Auto-Fix Errors<br/>━━━━━━━━━<br/>Lint + AI fixes<br/>Validate changes<br/>Commit updates]
-
-    Menu -->|Update Stale| Update[Update Changed Docs<br/>━━━━━━━━━<br/>Track code changes<br/>AI updates docs<br/>Validate accuracy]
-
-    Menu -->|Document Gaps| Document[Write Missing Docs<br/>━━━━━━━━━<br/>Analyze code<br/>AI writes docs<br/>Add CODE_POINTERS]
-
-    Menu -->|Full Refresh| Refresh[Run Full Pipeline<br/>━━━━━━━━━<br/>Fix + Update + Document<br/>Complete validation<br/>Comprehensive report]
-
-    Menu -->|Show Details| Details[Detailed Analysis<br/>━━━━━━━━━<br/>Full metrics<br/>All issues<br/>Recommendations]
-
-    Fix --> Report[Report Results]
-    Update --> Report
-    Document --> Report
-    Refresh --> Report
-    Details --> Report
-
-    Report --> Done([✓ Complete])
-
-    style Start fill:#14b8a6,stroke:#0f766e,color:#fff
-    style Fix fill:#f59e0b,stroke:#d97706,color:#fff
-    style Update fill:#f59e0b,stroke:#d97706,color:#fff
-    style Document fill:#f59e0b,stroke:#d97706,color:#fff
-    style Refresh fill:#f59e0b,stroke:#d97706,color:#fff
-    style Done fill:#14b8a6,stroke:#0f766e,color:#fff
-```
+1. Run `/ultra-doc`
+2. System checks if installed
+   - If No: Install System (ask 3 questions, create structure, run initial analysis)
+   - If Yes: Analyze Current State (read health metrics, check for changes, detect gaps & errors)
+3. Present Findings (show health status, list errors/gaps, display metrics)
+4. Choose action:
+   - **Fix Errors**: Lint + AI fixes, validate changes, commit updates
+   - **Update Stale**: Track code changes, AI updates docs, validate accuracy
+   - **Document Gaps**: Analyze code, AI writes docs, add CODE_POINTERS
+   - **Full Refresh**: Fix + Update + Document, complete validation, comprehensive report
+   - **Show Details**: Full metrics, all issues, recommendations
+5. Report Results
+6. Complete
 
 ### Setup Level Decision Tree
 
-```mermaid
-graph TD
-    Start{Project Size?} --> Small[< 20 files<br/>Personal Project]
-    Start --> Medium[20-200 files<br/>Team Project]
-    Start --> Large[200+ files<br/>Enterprise]
+**Project Size Based Setup:**
 
-    Small --> Minimal[Minimal Setup<br/>━━━━━━━━━<br/>✓ CLAUDE.md basic<br/>✓ SECTIONS.json<br/>✓ Navigation files<br/>✓ Health tracking]
-    Medium --> Standard[Standard Setup<br/>━━━━━━━━━<br/>✓ CLAUDE.md comprehensive<br/>✓ All JSON overlays<br/>✓ Context docs<br/>✓ Automation scripts<br/>✓ Full validation]
-    Large --> Comprehensive[Comprehensive Setup<br/>━━━━━━━━━<br/>✓ Extended documentation<br/>✓ CI integration<br/>✓ Service boundaries<br/>✓ Full automation<br/>✓ Enterprise validation]
+**Small Project (< 20 files - Personal Project)**
+- Minimal Setup includes:
+  - CLAUDE.md basic
+  - SECTIONS.json
+  - Navigation files
+  - Health tracking
 
-    style Start fill:#14b8a6,stroke:#0f766e,color:#fff
-    style Minimal fill:#f59e0b,stroke:#d97706,color:#fff
-    style Standard fill:#f59e0b,stroke:#d97706,color:#fff
-    style Comprehensive fill:#f59e0b,stroke:#d97706,color:#fff
-```
+**Medium Project (20-200 files - Team Project)**
+- Standard Setup includes:
+  - CLAUDE.md comprehensive
+  - All JSON overlays
+  - Context docs
+  - Automation scripts
+  - Full validation
+
+**Large Project (200+ files - Enterprise)**
+- Comprehensive Setup includes:
+  - Extended documentation
+  - CI integration
+  - Service boundaries
+  - Full automation
+  - Enterprise validation
 
 ### Pipeline Execution Flow
 
-```mermaid
-graph LR
-    Start([Pipeline Start]) --> Track[Track<br/>Code Changes]
-    Track --> State[Analyze<br/>Doc State]
-    State --> Coverage[Analyze<br/>Coverage]
-    Coverage --> Validate[Validate<br/>Accuracy]
-    Validate --> Fix[Auto-Fix<br/>Errors]
-    Fix --> Update[Update<br/>Timestamps]
-    Update --> Sections[Generate<br/>SECTIONS.json]
-    Sections --> Pointers[Create<br/>CODE_POINTERS]
-    Pointers --> Relations[Build<br/>RELATIONSHIPS]
-    Relations --> Index[Generate<br/>Navigation]
-    Index --> Done([✓ Complete])
+**Sequential Pipeline Steps:**
 
-    style Start fill:#14b8a6,stroke:#0f766e,color:#fff
-    style Done fill:#f59e0b,stroke:#d97706,color:#fff
-```
+1. Pipeline Start
+2. Track Code Changes
+3. Analyze Doc State
+4. Analyze Coverage
+5. Validate Accuracy
+6. Auto-Fix Errors
+7. Update Timestamps
+8. Generate SECTIONS.json
+9. Create CODE_POINTERS
+10. Build RELATIONSHIPS
+11. Generate Navigation
+12. Complete
 
 <details>
 <summary><strong>📋 Complete Script Reference</strong></summary>
@@ -894,19 +755,12 @@ graph LR
 
 ### Token Savings Over Time
 
-```mermaid
-graph LR
-    Q1[Query 1<br/>Break-even] --> Q2[Query 2<br/>Positive ROI]
-    Q2 --> Q3[Query 3<br/>2x savings]
-    Q3 --> Q4[Query 5<br/>5x savings]
-    Q4 --> Q5[Query 10<br/>10x+ savings]
-
-    style Q1 fill:#14b8a6,stroke:#0f766e,color:#fff
-    style Q2 fill:#14b8a6,stroke:#0f766e,color:#fff
-    style Q3 fill:#f59e0b,stroke:#d97706,color:#fff
-    style Q4 fill:#f59e0b,stroke:#d97706,color:#fff
-    style Q5 fill:#f59e0b,stroke:#d97706,color:#fff
-```
+**Progressive Savings:**
+- Query 1: Break-even
+- Query 2: Positive ROI
+- Query 3: 2x savings
+- Query 5: 5x savings
+- Query 10: 10x+ savings
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
