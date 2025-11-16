@@ -11,7 +11,27 @@
 
 **Generate token-efficient, AI-readable documentation with JSON overlays that reduce context usage by 60-90%**
 
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
+
+## What is Ultra-Doc?
+
+Ultra-Doc is a Claude Code plugin that creates and maintains an LLM-optimized documentation system in any repository. Instead of AI assistants reading entire files (consuming thousands of tokens), Ultra-Doc generates JSON overlays that enable selective, token-efficient context retrieval.
+
+The `/llm-docs` command transforms scattered documentation into a structured system with:
+- Token-counted sections for efficient retrieval
+- Code-to-documentation mappings
+- Dependency graphs and relationships
+- Progressive disclosure (overview → details → source)
+- Tool-neutral design (works with any AI assistant)
+
+> [!TIP]
+> Run `/llm-docs` after major code changes to keep AI context fresh and accurate
+
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
+</div>
 
 ## Quick Start
 
@@ -74,23 +94,9 @@ After you install it, tell me how it works and what the /llm-docs command does.
 - [Version](#version)
 - [Support](#support)
 
----
-
-## What is Ultra-Doc?
-
-Ultra-Doc is a Claude Code plugin that creates and maintains an LLM-optimized documentation system in any repository. Instead of AI assistants reading entire files (consuming thousands of tokens), Ultra-Doc generates JSON overlays that enable selective, token-efficient context retrieval.
-
-The `/llm-docs` command transforms scattered documentation into a structured system with:
-- Token-counted sections for efficient retrieval
-- Code-to-documentation mappings
-- Dependency graphs and relationships
-- Progressive disclosure (overview → details → source)
-- Tool-neutral design (works with any AI assistant)
-
-> [!TIP]
-> Run `/llm-docs` after major code changes to keep AI context fresh and accurate
-
----
+<div align="center">
+  <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
+</div>
 
 ## Visual Overview
 
