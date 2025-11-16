@@ -118,10 +118,6 @@ After you install it, tell me how it works and what the /ultra-doc command does.
 
 ### Token Flow Comparison
 
-<table>
-<tr>
-<td width="50%" valign="top">
-
 **❌ Without Ultra-Doc**
 
 ```
@@ -147,8 +143,7 @@ Total: 18,000 tokens
 - No staleness detection
 - No accuracy validation
 
-</td>
-<td width="50%" valign="top">
+---
 
 **✅ With Ultra-Doc**
 
@@ -174,10 +169,6 @@ Total: 3,200 tokens
 - **82% token reduction**
 - Auto-detects stale docs
 - Validates accuracy
-
-</td>
-</tr>
-</table>
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
@@ -260,10 +251,6 @@ Source: src/auth/authenticator.js:45-52
 
 ### Staleness Detection
 
-<table>
-<tr>
-<td width="50%" valign="top">
-
 **Before (Stale Documentation):**
 
 ```markdown
@@ -283,8 +270,7 @@ Sessions expire after 1 hour.
 + useJWT: true
 ```
 
-</td>
-<td width="50%" valign="top">
+---
 
 **After (Auto-Updated):**
 
@@ -305,15 +291,7 @@ Last Validated: 2025-11-15
 - Timeout value corrected
 - Source citation added
 
-</td>
-</tr>
-</table>
-
 ### Coverage Gap Detection
-
-<table>
-<tr>
-<td width="50%" valign="top">
 
 **COVERAGE.json Output:**
 
@@ -335,8 +313,7 @@ Last Validated: 2025-11-15
 }
 ```
 
-</td>
-<td width="50%" valign="top">
+---
 
 **AI Action:**
 
@@ -361,15 +338,7 @@ Source: src/utils/validator.js:12-28
 
 **Result:** Coverage → 80.8%
 
-</td>
-</tr>
-</table>
-
 ### Accuracy Validation
-
-<table>
-<tr>
-<td width="50%" valign="top">
 
 **Documentation Claim:**
 
@@ -393,8 +362,7 @@ function paginate(limit, offset) {
 }
 ```
 
-</td>
-<td width="50%" valign="top">
+---
 
 **VALIDATION.json:**
 
@@ -416,15 +384,7 @@ function paginate(limit, offset) {
 **Auto-Fixed:** ✅
 Maximum limit is ~~50~~ **100** items.
 
-</td>
-</tr>
-</table>
-
 ### Auto-Fix Capabilities
-
-<table>
-<tr>
-<td width="50%" valign="top">
 
 **Linting Errors Detected:**
 
@@ -441,8 +401,7 @@ code here
 *  In same list
 ```
 
-</td>
-<td width="50%" valign="top">
+---
 
 **Auto-Fixed:**
 
@@ -464,10 +423,6 @@ code here
 - Language tag added
 - Trailing whitespace removed
 - List markers standardized
-
-</td>
-</tr>
-</table>
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
@@ -639,107 +594,321 @@ enterprise-monorepo/
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-14b8a6?style=flat" alt="divider">
 </div>
 
-## How It Works
+## How Ultra-Doc Works: The Two-Layer Architecture
+
+Ultra-Doc uses a **clever hybrid architecture** that combines deterministic scripts with AI orchestration to create a self-healing documentation system. This isn't just another doc generator - it's a continuous maintenance system that keeps your docs accurate, complete, and optimized.
+
+### The Core Insight: Two Layers Working Together
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    LAYER 1: AI ORCHESTRATION                │
+│  (Claude analyzes, decides, coordinates, validates)         │
+│                                                              │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │ Read DOC_STATE.json → Understand current health    │    │
+│  │ Read COVERAGE.json → Find documentation gaps       │    │
+│  │ Read VALIDATION.json → See accuracy issues         │    │
+│  │ Decide what to do → Execute appropriate scripts    │    │
+│  │ Validate results → Ensure changes are correct      │    │
+│  └────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+                            ↓↑
+┌─────────────────────────────────────────────────────────────┐
+│              LAYER 2: DETERMINISTIC SCRIPTS                 │
+│  (Fast, reliable, no hallucinations)                        │
+│                                                              │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │ Track code changes → Mark docs as stale           │    │
+│  │ Analyze structure → Generate health metrics       │    │
+│  │ Find exports → Identify gaps                      │    │
+│  │ Fix formatting → Repair linting errors            │    │
+│  │ Generate JSON → Create optimized indexes          │    │
+│  └────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Why This Matters:**
+
+1. **Deterministic scripts do what they're good at** - Fast, reliable analysis with zero hallucinations
+2. **AI does what it's good at** - Understanding context, making decisions, writing prose
+3. **JSON files bridge the gap** - Scripts output structured data, AI reads and acts on it
+4. **Result: Self-healing system** - Automatically detects problems and fixes them
+
+### The Three-File Feedback Loop
+
+Ultra-Doc's intelligence comes from three continuously-updated JSON files that create a feedback loop:
+
+```
+DOC_STATE.json              COVERAGE.json              VALIDATION.json
+    ↓                           ↓                          ↓
+"3 docs are stale"      "12 functions need docs"    "5 claims are wrong"
+    ↓                           ↓                          ↓
+    └───────────────────────────┴──────────────────────────┘
+                                ↓
+                    AI reads all three and decides:
+                    "Fix validation errors first,
+                     then update stale docs,
+                     then fill gaps"
+                                ↓
+                    Executes scripts in priority order
+                                ↓
+                    Scripts update the JSON files
+                                ↓
+                         Loop continues
+```
 
 ### Interactive Decision Tree
 
-**Workflow:**
+When you run `/ultra-doc`, here's what happens:
 
-1. Run `/ultra-doc`
-2. System checks if installed
-   - If No: Install System (ask 3 questions, create structure, run initial analysis)
-   - If Yes: Analyze Current State (read health metrics, check for changes, detect gaps & errors)
-3. Present Findings (show health status, list errors/gaps, display metrics)
-4. Choose action:
-   - **Fix Errors**: Lint + AI fixes, validate changes, commit updates
-   - **Update Stale**: Track code changes, AI updates docs, validate accuracy
-   - **Document Gaps**: Analyze code, AI writes docs, add CODE_POINTERS
-   - **Full Refresh**: Fix + Update + Document, complete validation, comprehensive report
-   - **Show Details**: Full metrics, all issues, recommendations
-5. Report Results
-6. Complete
+**1. Initial Check**
+```
+Run /ultra-doc
+    ↓
+Does system exist?
+    ├─ NO → Install System
+    │        ├─ Ask 1-3 questions (smart defaults)
+    │        ├─ Copy templates (based on project size)
+    │        ├─ Run initial analysis
+    │        └─ Create JSON files
+    │
+    └─ YES → Analyze Current State
+             ├─ Read DOC_STATE.json
+             ├─ Read COVERAGE.json
+             ├─ Read VALIDATION.json
+             └─ Check for code changes
+```
 
-### Setup Level Decision Tree
+**2. Present Findings**
+```
+Show Health Status
+    ├─ Errors found: 8
+    ├─ Stale docs: 3
+    ├─ Coverage gaps: 12
+    └─ Overall health: 78%
+```
 
-**Project Size Based Setup:**
+**3. Choose Action** (AI presents menu, user picks or AI auto-chooses)
+```
+Options:
+    ├─ Fix Errors → autofix-linting.mjs + AI fixes factual errors
+    ├─ Update Stale → AI reads code changes, updates docs
+    ├─ Document Gaps → AI writes missing docs for exports
+    ├─ Full Refresh → Run complete pipeline
+    └─ Show Details → Display full metrics
+```
 
-**Small Project (< 20 files - Personal Project)**
-- Minimal Setup includes:
-  - CLAUDE.md basic
-  - SECTIONS.json
-  - Navigation files
-  - Health tracking
+**4. Execute & Validate**
+```
+Execute chosen action
+    ↓
+Run appropriate scripts
+    ↓
+AI validates changes
+    ↓
+Update JSON files
+    ↓
+Report results
+```
 
-**Medium Project (20-200 files - Team Project)**
-- Standard Setup includes:
-  - CLAUDE.md comprehensive
-  - All JSON overlays
-  - Context docs
-  - Automation scripts
-  - Full validation
+### Project Size-Based Setup
 
-**Large Project (200+ files - Enterprise)**
-- Comprehensive Setup includes:
-  - Extended documentation
-  - CI integration
-  - Service boundaries
-  - Full automation
-  - Enterprise validation
+Ultra-Doc adapts to your project's complexity:
 
-### Pipeline Execution Flow
+**Small Project (< 20 files)**
 
-**Sequential Pipeline Steps:**
+**Minimal Setup:**
+- Basic CLAUDE.md (79 lines)
+- SECTIONS.json
+- Navigation files
+- Health tracking
 
-1. Pipeline Start
-2. Track Code Changes
-3. Analyze Doc State
-4. Analyze Coverage
-5. Validate Accuracy
-6. Auto-Fix Errors
-7. Update Timestamps
-8. Generate SECTIONS.json
-9. Create CODE_POINTERS
-10. Build RELATIONSHIPS
-11. Generate Navigation
-12. Complete
+**Scripts Included:**
+- Core analysis (4)
+- Basic auto-fix (1)
+- JSON generation (2)
+
+**Questions Asked:** 1
+**Setup Time:** 2-3 min
+**Token Savings:** 75%
+
+---
+
+**Medium Project (20-200 files)**
+
+**Standard Setup:**
+- Comprehensive CLAUDE.md (234 lines)
+- All JSON overlays
+- Context docs (4)
+- Full automation
+
+**Scripts Included:**
+- All analysis (4)
+- All auto-fix (1)
+- All enhancement (8)
+
+**Questions Asked:** 2
+**Setup Time:** 4-5 min
+**Token Savings:** 81%
+
+---
+
+**Large Project (200+ files)**
+
+**Comprehensive Setup:**
+- Extended CLAUDE.md (350+ lines)
+- Service boundaries
+- CI integration
+- Enterprise validation
+
+**Scripts Included:**
+- All scripts (13)
+- CI hooks
+- Custom workflows
+
+**Questions Asked:** 3
+**Setup Time:** 6-7 min
+**Token Savings:** 87.5%
+
+### The Complete Pipeline
+
+Here's what happens during a full refresh:
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    FULL REFRESH PIPELINE                  │
+└──────────────────────────────────────────────────────────┘
+
+1. Track Code Changes
+   ├─ Read git log since last validation
+   ├─ Map changed files to docs via CODE_POINTERS.json
+   ├─ Mark affected docs as "needs validation"
+   └─ Estimate impact (low/medium/high)
+        ↓
+2. Analyze Doc State
+   ├─ Calculate health metrics
+   ├─ Assess staleness risk
+   ├─ Check completeness scores
+   └─ Output → DOC_STATE.json
+        ↓
+3. Analyze Coverage
+   ├─ Find all exports in codebase
+   ├─ Check which are documented
+   ├─ Track usage counts
+   └─ Output → COVERAGE.json
+        ↓
+4. Validate Accuracy
+   ├─ AI reads source code
+   ├─ Compares to documentation claims
+   ├─ Validates examples and file paths
+   └─ Output → VALIDATION.json
+        ↓
+5. Auto-Fix Errors
+   ├─ Deterministic: Fix linting (headings, whitespace, links)
+   ├─ AI: Fix factual errors (reads code, updates docs)
+   └─ Output → Updated markdown files
+        ↓
+6. Update Timestamps
+   ├─ Add "Last Updated" fields
+   └─ Mark validation dates
+        ↓
+7. Generate SECTIONS.json
+   ├─ Extract all markdown sections
+   ├─ Count tokens per section
+   └─ Create queryable index
+        ↓
+8. Create CODE_POINTERS
+   ├─ Map documentation to source files
+   ├─ Enable narrow path validation
+   └─ Output → CODE_POINTERS.json
+        ↓
+9. Build RELATIONSHIPS
+   ├─ Analyze dependencies
+   ├─ Generate graph data
+   └─ Output → RELATIONSHIPS.json
+        ↓
+10. Generate Navigation
+    ├─ Create llms.txt (AI navigation)
+    ├─ Build INDEX.md (file inventory)
+    └─ Update all cross-references
+        ↓
+11. Complete
+    └─ Report results with metrics
+```
+
+### The Scripts: What Each One Does
 
 <details>
 <summary><strong>📋 Complete Script Reference</strong></summary>
 
-### Analysis Scripts
+### Analysis Scripts (Intelligence Gathering)
 
-| Script | Purpose | Output | What It Does |
-|--------|---------|--------|--------------|
-| `analyze-doc-state.mjs` | Documentation health analysis | DOC_STATE.json | Generates health metrics, completeness scores, staleness risk assessment, and validation flags |
-| `analyze-coverage.mjs` | Code coverage gap detection | COVERAGE.json | Identifies undocumented code, analyzes exports, tracks usage counts, prioritizes documentation needs |
-| `validate-accuracy.mjs` | AI-driven accuracy validation | VALIDATION.json | Validates file paths, code examples, behavioral claims; detects contradictions and outdated info |
-| `track-code-changes.mjs` | Code change monitoring | Updates DOC_STATE.json | Monitors git history, maps changes to docs via CODE_POINTERS, estimates impact, marks docs for validation |
+| Script | Role | Output | How It Works |
+|--------|------|--------|--------------|
+| `track-code-changes.mjs` | Code change monitor | Updates DOC_STATE.json | Reads git log, maps changes to docs via CODE_POINTERS, estimates impact |
+| `analyze-doc-state.mjs` | Health calculator | DOC_STATE.json | Generates health metrics, staleness risk, completeness scores |
+| `analyze-coverage.mjs` | Gap finder | COVERAGE.json | Identifies undocumented exports, tracks usage, prioritizes work |
+| `validate-accuracy.mjs` | Truth checker | VALIDATION.json | AI reads code, validates claims, detects contradictions |
 
-### Auto-Fix Scripts
+### Auto-Fix Scripts (Self-Healing)
 
-| Script | Purpose | Output | What It Does |
-|--------|---------|--------|--------------|
-| `autofix-linting.mjs` | Deterministic error fixing | Fixed markdown files | Fixes heading structure, code block tags, whitespace, list markers, broken links automatically |
+| Script | Role | Output | How It Works |
+|--------|------|--------|--------------|
+| `autofix-linting.mjs` | Format fixer | Fixed markdown | Deterministically fixes structure, whitespace, links |
 
-### Enhancement Scripts
+### Enhancement Scripts (Optimization)
 
-| Script | Purpose | Output | What It Does |
-|--------|---------|--------|--------------|
-| `update-timestamps.mjs` | Timestamp maintenance | Updated docs | Adds/updates "Last Updated" fields to keep freshness visible |
-| `generate-section-index.mjs` | Token optimization | SECTIONS.json | Extracts sections with token counts for efficient retrieval (60-70% reduction) |
-| `add-code-pointers.mjs` | Code mapping | CODE_POINTERS.json | Creates explicit doc → code links for narrow path validation |
-| `render-relationships.mjs` | Dependency analysis | RELATIONSHIPS.json | Generates dependency graphs and relationship maps |
-| `generate-llm-index.mjs` | Navigation creation | llms.txt, INDEX.md | Creates AI-readable navigation files for fast orientation |
-| `lint-documentation.mjs` | Quality validation | Error reports | Checks structure, formatting, consistency without auto-fixing |
-| `check-external-links.mjs` | Link validation | Broken link reports | Validates external URLs, prevents documentation with dead links |
+| Script | Role | Output | How It Works |
+|--------|------|--------|--------------|
+| `generate-section-index.mjs` | Token optimizer | SECTIONS.json | Extracts sections, counts tokens, enables selective retrieval |
+| `add-code-pointers.mjs` | Code mapper | CODE_POINTERS.json | Creates explicit doc→code links for validation |
+| `render-relationships.mjs` | Dependency analyzer | RELATIONSHIPS.json | Generates dependency graphs and relationship maps |
+| `generate-llm-index.mjs` | Navigation builder | llms.txt, INDEX.md | Creates AI-readable navigation for fast orientation |
+| `update-timestamps.mjs` | Freshness tracker | Updated docs | Adds "Last Updated" and validation dates |
+| `lint-documentation.mjs` | Quality checker | Error reports | Validates structure and consistency (non-destructive) |
+| `check-external-links.mjs` | Link validator | Broken link reports | Validates external URLs, prevents dead links |
 
-### Orchestrator
+### Orchestrator (Pipeline Manager)
 
-| Script | Purpose | Output | What It Does |
-|--------|---------|--------|--------------|
-| `optimize-docs.sh` | Full pipeline orchestration | Runs all scripts | Executes complete analysis, validation, and optimization pipeline in proper sequence |
+| Script | Role | Output | How It Works |
+|--------|------|--------|--------------|
+| `optimize-docs.sh` | Pipeline coordinator | Runs all scripts | Executes complete pipeline in correct dependency order |
 
 </details>
+
+### Why This Architecture Works
+
+**1. Separation of Concerns**
+- Scripts handle mechanical tasks (no hallucinations)
+- AI handles creative tasks (understanding, writing, deciding)
+- JSON files provide clean interface between them
+
+**2. Continuous Feedback Loop**
+- Scripts detect problems → output JSON
+- AI reads JSON → makes decisions
+- AI executes fixes → scripts validate
+- Scripts update JSON → cycle continues
+
+**3. Narrow Path Validation**
+- CODE_POINTERS.json maps docs to specific source files
+- AI only needs to read relevant code (not entire codebase)
+- Makes accuracy validation "pretty easy"
+- Prevents context overflow
+
+**4. Token Optimization by Design**
+- SECTIONS.json enables selective retrieval
+- AI only loads what it needs
+- 60-90% reduction in token usage
+- Scales to enterprise codebases
+
+**5. Self-Healing System**
+- Automatically detects when docs go stale
+- Validates accuracy against actual code
+- Fixes errors without human intervention
+- Identifies and fills documentation gaps
+
+**The Result:** A documentation system that stays accurate, complete, and optimized - automatically.
 
 <div align="center">
   <img src="https://img.shields.io/badge/━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-f59e0b?style=flat" alt="divider">
