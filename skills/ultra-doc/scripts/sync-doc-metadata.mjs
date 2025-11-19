@@ -109,6 +109,9 @@ function syncMetadata() {
     runScript('generate-section-index.mjs');
     runScript('generate-llm-index.mjs');
 
+    // 3b. Generate/Sync Human Docs
+    runScript('generate-human-doc.mjs');
+
     // 4. Run linter (and autofix before?)
     // Roadmap says: "Auto-sync metadata before linting"
     // So we run linter last.

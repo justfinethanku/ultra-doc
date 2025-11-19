@@ -39,11 +39,7 @@ temp/
 *.tmp
 
 # Development/planning documents (not needed for plugin distribution)
-plan_for_documentation_slash_command.md
-Plugins-Claude-Code-Docs.md
-skill_authoring_best_practices.md
-Agent-Skills.md
-plugins_in_the_sdk.md
+not_for_publishing/
 
 # Generated documentation (in target repos, not in this plugin)
 # Uncomment these if testing in a real repo:
