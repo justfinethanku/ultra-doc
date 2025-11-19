@@ -1,7 +1,7 @@
 {
   "name": "ultra-doc",
   "description": "AI-driven documentation system that writes, maintains, and validates documentation automatically. Detects code changes, finds errors, and keeps docs perfectly synced with your codebase.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": {
     "name": "Jonathan Edwards",
     "url": "https://github.com/jonathanedwards"

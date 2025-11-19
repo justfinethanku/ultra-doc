@@ -8,11 +8,43 @@ This directory contains AI-optimized documentation for navigating and understand
 
 ## Core Documentation Files
 
-### test-sync.md
+### CLAUDE.md
 
-**Description:** Test Sync
+**Description:** Ultra-Doc 2.0 – CLAUDE Guide
 
-**Stats:** 6 lines, 53 characters
+**Stats:** 83 lines, 5910 characters
+
+**Modified:** 2025-11-19
+
+### LINT_WARNINGS.md
+
+**Description:** Documentation Lint Warnings
+
+**Stats:** 15 lines, 270 characters
+
+**Modified:** 2025-11-19
+
+### api-overview.md
+
+**Description:** Ultra-Doc Command & Script Reference
+
+**Stats:** 79 lines, 4130 characters
+
+**Modified:** 2025-11-19
+
+### architecture.md
+
+**Description:** Ultra-Doc Architecture
+
+**Stats:** 70 lines, 4492 characters
+
+**Modified:** 2025-11-19
+
+### workflows.md
+
+**Description:** Ultra-Doc Workflows
+
+**Stats:** 76 lines, 3960 characters
 
 **Modified:** 2025-11-19
 
@@ -24,7 +56,39 @@ These files provide structured, queryable metadata for efficient AI assistant na
 
 **Description:** JSON metadata file
 
-**Stats:** 509 characters
+**Stats:** 64 characters
+
+**Modified:** 2025-11-19
+
+### CODE_CHANGES.json
+
+**Description:** JSON metadata file
+
+**Stats:** 130 characters
+
+**Modified:** 2025-11-19
+
+### CODE_POINTERS.json
+
+**Description:** Mappings from documentation topics to source code files
+
+**Stats:** 11933 characters
+
+**Modified:** 2025-11-19
+
+### DOC_STATE.json
+
+**Description:** JSON metadata file
+
+**Stats:** 8900 characters
+
+**Modified:** 2025-11-19
+
+### RELATIONSHIPS.json
+
+**Description:** Project dependencies and documentation relationships
+
+**Stats:** 1831 characters
 
 **Modified:** 2025-11-19
 
@@ -32,7 +96,15 @@ These files provide structured, queryable metadata for efficient AI assistant na
 
 **Description:** Token-optimized content sections from markdown files
 
-**Stats:** 302 characters
+**Stats:** 25912 characters
+
+**Modified:** 2025-11-19
+
+### VALIDATION.json
+
+**Description:** JSON metadata file
+
+**Stats:** 224 characters
 
 **Modified:** 2025-11-19
 

@@ -38,6 +38,9 @@ tmp/
 temp/
 *.tmp
 
+# Local prompt logs written by generate-human-doc.mjs
+skills/logs/
+
 # Development/planning documents (not needed for plugin distribution)
 not_for_publishing/
 

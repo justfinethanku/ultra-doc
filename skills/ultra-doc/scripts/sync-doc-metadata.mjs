@@ -82,6 +82,39 @@ function runScript(scriptName) {
     }
 }
 
+function verifyParity() {
+    console.log('\n⚖️  Verifying Dual-Track Parity...');
+    const llmDir = path.join(process.cwd(), 'context_for_llms');
+    const humanDir = path.join(process.cwd(), 'context_for_humans');
+
+    if (!fs.existsSync(llmDir)) return true;
+
+    const llmFiles = fs.readdirSync(llmDir).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
+    const issues = [];
+
+    for (const file of llmFiles) {
+        const humanPath = path.join(humanDir, file);
+        if (!fs.existsSync(humanPath)) {
+            issues.push(`Missing human doc for ${file}`);
+            continue;
+        }
+        const llmTime = fs.statSync(path.join(llmDir, file)).mtimeMs;
+        const humanTime = fs.statSync(humanPath).mtimeMs;
+        if (humanTime < llmTime) {
+            issues.push(`Human doc ${file} is older than machine doc`);
+        }
+    }
+
+    if (issues.length > 0) {
+        console.error(`❌ Parity Mismatch detected:`);
+        issues.forEach(issue => console.error(`   - ${issue}`));
+        return false;
+    } else {
+        console.log('  ✓ Parity confirmed: All machine docs have human counterparts.');
+        return true;
+    }
+}
+
 function syncMetadata() {
     console.log('🔄 Syncing Documentation Metadata...\n');
 
@@ -108,15 +141,29 @@ function syncMetadata() {
     // 3. Run generators
     runScript('generate-section-index.mjs');
     runScript('generate-llm-index.mjs');
-
-    // 3b. Generate/Sync Human Docs
-    runScript('generate-human-doc.mjs');
+    runScript('generate-code-pointers.mjs');
+    runScript('render-relationships.mjs');
 
     // 4. Run linter (and autofix before?)
     // Roadmap says: "Auto-sync metadata before linting"
     // So we run linter last.
-    runScript('autofix-linting.mjs'); // Optional: run autofix first?
+    runScript('autofix-linting.mjs');
+    process.env.ULTRA_DOC_SKIP_PARITY = '1';
     runScript('lint-documentation.mjs');
+    delete process.env.ULTRA_DOC_SKIP_PARITY;
+
+    // 5. Regenerate Human Docs post-lint (captures updated digests)
+    runScript('generate-human-doc.mjs');
+
+    // 6. Verify Parity
+    if (!verifyParity()) {
+        console.error('\n❌ Sync failed due to parity mismatch.');
+        process.exit(1);
+    }
+
+    // 7. Reporting
+    runScript('generate-changelog.mjs');
+    runScript('generate-report.mjs');
 
     console.log('\n✅ Sync Complete.');
 }

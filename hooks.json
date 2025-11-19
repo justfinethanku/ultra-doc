@@ -2,7 +2,7 @@
     "hooks": [
         {
             "type": "PreCommit",
-            "command": "/ultra-doc --quick",
+            "command": "ULTRA_DOC_AUTO_ACTION=quick /ultra-doc",
             "description": "Run Ultra-Doc quick check before committing"
         },
         {
@@ -13,15 +13,20 @@
         {
             "type": "UserPromptSubmit",
             "regex": "(deploy|ship|release)",
-            "command": "/ultra-doc --quick",
+            "command": "ULTRA_DOC_AUTO_ACTION=quick /ultra-doc",
             "description": "Check docs before deployment"
         },
         {
             "type": "PostToolUse",
             "tool": "write_to_file",
             "condition": "args.TargetFile.includes('context_for_llms')",
-            "command": "/ultra-doc --sync",
+            "command": "ULTRA_DOC_AUTO_ACTION=sync /ultra-doc",
             "description": "Sync metadata when docs are manually edited"
+        },
+        {
+            "type": "Idle",
+            "command": "ULTRA_DOC_AUTO_ACTION=summary /ultra-doc",
+            "description": "Remind the user about documentation health when the repo sits idle"
         }
     ]
 }

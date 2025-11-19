@@ -272,7 +272,8 @@ function validateAccuracy() {
   console.log(`\n✓ VALIDATION.json generated: ${OUTPUT_FILE}`);
 
   if (validation.errors.length > 0) {
-    console.log('\n⚠️  Found validation errors that need attention');
+    console.log('\n❌ Validation errors detected. Review context_for_llms/VALIDATION.json for details.');
+    process.exit(1);
   }
 }
 

@@ -1,15 +1,17 @@
 ---
 source_file: LINT_WARNINGS.md
-generated_at: 2025-11-19T04:52:10.107Z
+generated_at: 2025-11-19T08:29:02.232Z
+translation_engine: ultra-doc-v2-humanizer
 ---
 
-# [Human Readable] LINT_WARNINGS
+# Documentation Lint Warnings – Human Overview
 
-> **Note:** This document is automatically generated from the machine-optimized version.
-> *Translation logic pending LLM integration.*
+> No warnings or errors found.
 
----
+## Validation Snapshot
 
-# Documentation Lint Warnings
+Accuracy: 100% Errors: 0 Warnings: 0
 
-No warnings or errors found.
+## Parity Snapshot
+
+Parity check skipped for this run (quick mode).

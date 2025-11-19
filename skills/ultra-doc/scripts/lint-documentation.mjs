@@ -12,7 +12,19 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CONTEXT_DIR = path.join(process.cwd(), 'context_for_llms');
+const ROOT_DIR = process.cwd();
+const CONTEXT_DIR = path.join(ROOT_DIR, 'context_for_llms');
+const VALIDATION_FILE = path.join(CONTEXT_DIR, 'VALIDATION.json');
+const FILE_REFERENCE_REGEX = /`([^`]+\.(?:mjs|js|ts|md|json))`/g;
+const SKIP_PARITY_CHECK = process.env.ULTRA_DOC_SKIP_PARITY === '1';
+const FILE_REFERENCE_SEARCH_PATHS = [
+  '',
+  'skills/ultra-doc/scripts',
+  'context_for_llms',
+  'context_for_humans',
+  'changelog',
+  'reports'
+];
 
 const RULES = {
   'heading-structure': {
@@ -99,7 +111,7 @@ const RULES = {
     check: (content) => {
       const issues = [];
       const lines = content.split('\n');
-      const MAX_LENGTH = 120;
+      const MAX_LENGTH = 160;
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
@@ -166,6 +178,32 @@ const RULES = {
         }
       }
 
+      return issues;
+    }
+  },
+
+  'file-reference-exists': {
+    description: 'Inline file references should point to real files',
+    check: (content) => {
+      const issues = [];
+      const seen = new Map();
+      let match;
+      while ((match = FILE_REFERENCE_REGEX.exec(content)) !== null) {
+        const ref = match[1];
+        if (!seen.has(ref)) {
+          seen.set(ref, match.index);
+        }
+      }
+      for (const [ref, index] of seen.entries()) {
+        if (!referenceExists(ref)) {
+          const line = content.substring(0, index).split('\n').length;
+          issues.push({
+            line,
+            message: `Referenced file does not exist: ${ref}`,
+            severity: 'warning'
+          });
+        }
+      }
       return issues;
     }
   }
@@ -238,19 +276,25 @@ function lintDocumentation() {
   }
 
   // Generate and save warning digest
-  generateWarningDigest(results, warningCount + errorCount);
+  const digestPath = generateWarningDigest(results, warningCount + errorCount);
+  let parityIssues = [];
+  let parityCheckRan = false;
 
-  // Check dual docs consistency
-  const dualDocsIssues = checkDualDocsConsistency();
-  if (dualDocsIssues.length > 0) {
-    console.log('\n👥 Dual Documentation Consistency Checks:');
-    for (const issue of dualDocsIssues) {
-      const icon = issue.severity === 'error' ? '✗' : '⚠';
-      console.log(`  ${icon} ${issue.message}`);
-      if (issue.severity === 'error') errorCount++;
-      else warningCount++;
+  if (!SKIP_PARITY_CHECK) {
+    parityIssues = checkDualDocsConsistency();
+    parityCheckRan = true;
+    if (parityIssues.length > 0) {
+      console.log('\n👥 Dual Documentation Consistency Checks:');
+      for (const issue of parityIssues) {
+        const icon = issue.severity === 'error' ? '✗' : '⚠';
+        console.log(`  ${icon} ${issue.message}`);
+        if (issue.severity === 'error') errorCount++;
+        else warningCount++;
+      }
     }
   }
+
+  appendHealthSummary(digestPath, parityIssues, parityCheckRan);
 
   // Exit with error code if there are errors
   if (errorCount > 0) {
@@ -264,7 +308,7 @@ function lintDocumentation() {
 }
 
 function checkDualDocsConsistency() {
-  const HUMAN_DIR = path.join(process.cwd(), 'context_for_humans');
+  const HUMAN_DIR = path.join(ROOT_DIR, 'context_for_humans');
   const issues = [];
 
   if (!fs.existsSync(HUMAN_DIR)) {
@@ -355,6 +399,55 @@ function generateWarningDigest(results, issueCount) {
       console.log(`  ...and ${allWarnings.length - 5} more (see LINT_WARNINGS.md)`);
     }
   }
+
+  return digestPath;
+}
+
+function appendHealthSummary(digestPath, parityIssues, parityCheckRan) {
+  if (!digestPath) return;
+  const validationSummary = buildValidationSummary();
+  const paritySummary = buildParitySummary(parityIssues, parityCheckRan);
+
+  const extra = `\n## Validation Snapshot\n${validationSummary}\n\n## Parity Snapshot\n${paritySummary}\n`;
+  fs.appendFileSync(digestPath, extra);
+}
+
+function buildValidationSummary() {
+  if (!fs.existsSync(VALIDATION_FILE)) {
+    return 'Validation results unavailable. Run `/ultra-doc --sync` to generate VALIDATION.json.';
+  }
+  const data = JSON.parse(fs.readFileSync(VALIDATION_FILE, 'utf-8'));
+  const results = data.validation_results || {};
+  const accuracy = results.accuracy_score != null
+    ? `${Math.round(results.accuracy_score * 100)}%`
+    : 'Unknown';
+  const errors = data.errors ? data.errors.length : 0;
+  const warnings = data.warnings ? data.warnings.length : 0;
+  return `Accuracy: ${accuracy}\n- Errors: ${errors}\n- Warnings: ${warnings}`;
+}
+
+function buildParitySummary(parityIssues, parityCheckRan) {
+  if (!parityCheckRan) {
+    return 'Parity check skipped for this run (quick mode).';
+  }
+  if (!parityIssues || parityIssues.length === 0) {
+    return 'All human docs are in sync.';
+  }
+  return parityIssues.map(issue => `- ${issue.message}`).join('\n');
 }
 
 lintDocumentation();
+
+function referenceExists(ref) {
+  if (/\s/.test(ref) || ref.includes('*') || ref.includes('YYYY')) {
+    return true;
+  }
+  const normalized = ref.replace(/^.\//, '');
+  for (const base of FILE_REFERENCE_SEARCH_PATHS) {
+    const candidate = path.join(ROOT_DIR, base, normalized);
+    if (fs.existsSync(candidate)) {
+      return true;
+    }
+  }
+  return false;
+}

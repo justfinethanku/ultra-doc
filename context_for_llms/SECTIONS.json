@@ -1,16 +1,358 @@
 {
-  "generated": "2025-11-19T04:51:17.783Z",
-  "total_sections": 1,
-  "total_tokens": 7,
+  "generated": "2025-11-19T08:29:02.069Z",
+  "total_sections": 39,
+  "total_tokens": 4656,
   "sections": [
     {
-      "file": "test-sync.md",
-      "heading": "Test Sync",
+      "file": "CLAUDE.md",
+      "heading": "Ultra-Doc 2.0 – CLAUDE Guide",
       "level": 1,
       "line": 3,
-      "content": "# Test Sync\n\nSome content.",
-      "tokens": 7,
+      "content": "# Ultra-Doc 2.0 – CLAUDE Guide",
+      "tokens": 8,
+      "lines": 2
+    },
+    {
+      "file": "CLAUDE.md",
+      "heading": "Overview",
+      "level": 2,
+      "line": 5,
+      "content": "## Overview\n\nUltra-Doc is a Claude Code plugin that keeps documentation and code in sync with **one `/ultra-doc` command**. The repo bundles:\n\n- A public command description (`commands/ultra-doc.md`) so users can install the skill.\n- Automation scripts inside `skills/ultra-doc/scripts/` that handle analysis, linting, translation, metadata generation, and validation.\n- Machine-facing docs in `context_for_llms/` (this folder) with JSON overlays for token-efficient retrieval.\n- Human translations in `context_for_humans/` so people can read the same information without digging through rigid templates.\n\nWhen someone runs `/ultra-doc`, Claude shells into `index.js` and launches `skills/ultra-doc/scripts/orchestrator.mjs`.\nFrom there the orchestrator picks the next workflow (sync, translation, validation, or reporting).",
+      "tokens": 206,
+      "lines": 12
+    },
+    {
+      "file": "CLAUDE.md",
+      "heading": "Directory Map",
+      "level": 2,
+      "line": 17,
+      "content": "## Directory Map",
+      "tokens": 4,
+      "lines": 2
+    },
+    {
+      "file": "CLAUDE.md",
+      "heading": "Repo Root",
+      "level": 3,
+      "line": 19,
+      "content": "### Repo Root\n- `commands/` – Describes the slash command surface.\n- `context_for_llms/` – Machine-perfect docs + overlays (`SECTIONS.json`, `CODE_POINTERS.json`, `RELATIONSHIPS.json`, `DOC_STATE.json`).\n- `context_for_humans/` – Generated “Mike Dion” docs for humans.\n- `skills/ultra-doc/` – Skill manifest, reference, and automation scripts.\n- `reports/` – Human-friendly summaries; `reports/ultra-doc-summary.md` is regenerated after each run.\n- `changelog/` – Daily doc-change files created by `generate-changelog.mjs`.\n- `.ultra-doc.config.json` – Installer answers plus the currently installed version.",
+      "tokens": 152,
+      "lines": 9
+    },
+    {
+      "file": "CLAUDE.md",
+      "heading": "Key Scripts (`skills/ultra-doc/scripts/`)",
+      "level": 3,
+      "line": 28,
+      "content": "### Key Scripts (`skills/ultra-doc/scripts/`)\n- `sync-doc-metadata.mjs` – Primary pipeline: timestamps → overlays → translation → parity check → lint → changelog → report.\n- `generate-human-doc.mjs` – Converts machine docs into narrative form using deterministic prompt templates (and enforces parity).\n- `generate-code-pointers.mjs` – Builds `CODE_POINTERS.json` by scanning docs for file references.\n- `render-relationships.mjs` – Creates a dependency graph of automation scripts for AIs.\n- `analyze-doc-state.mjs`, `track-code-changes.mjs`, `validate-accuracy.mjs` – Consume overlays and flag stale or inaccurate docs.\n- `orchestrator.mjs` – Implements the decision tree that chooses which workflow to run when `/ultra-doc` starts.",
+      "tokens": 184,
+      "lines": 8
+    },
+    {
+      "file": "CLAUDE.md",
+      "heading": "Running `/ultra-doc`",
+      "level": 2,
+      "line": 36,
+      "content": "## Running `/ultra-doc`\n\n1. **Entry Point** – `index.js` simply spawns `node skills/ultra-doc/scripts/orchestrator.mjs`.\n2. **Version Check** – The orchestrator compares `package.json` / `.claude-plugin/plugin.json` versions against `.ultra-doc.config.json`.\n   If the config lags, it prints a reminder to reinstall before automation runs.\n3. **State Collection** – Runs `analyze-doc-state.mjs` so DOC_STATE.json and the priorities list reflect current code + docs.\n4. **Decision Tree** – Based on the state:\n   - If docs are stale/misaligned → Ultra-Doc auto-runs the full remediation chain (`track-code-changes.mjs` → `sync-doc-metadata.mjs` → `validate-accuracy.mjs`) before showing new health metrics.\n   - If only validations are pending → run the validation workflow only.\n   - If everything is healthy → skip straight to reporting or whatever action the user selects.\n5. **Reporting** – Every successful run ends with `generate-changelog.mjs` and `generate-report.mjs`, so humans and AIs get the same health snapshot.",
+      "tokens": 256,
+      "lines": 12
+    },
+    {
+      "file": "CLAUDE.md",
+      "heading": "Automation Stack",
+      "level": 2,
+      "line": 48,
+      "content": "## Automation Stack\n\n- **Metadata** – `update-timestamps.mjs`, `generate-section-index.mjs`, `generate-llm-index.mjs`\n  Keeps Markdown headings and overlay data aligned.\n- **Pointers & Graphs** – `generate-code-pointers.mjs`, `render-relationships.mjs`\n  Maps documentation claims back to actual source files and shows script dependencies.\n- **Translation** – `generate-human-doc.mjs`\n  Converts machine docs into human narratives and enforces parity.\n- **Linting & Autofix** – `autofix-linting.mjs`, `lint-documentation.mjs`\n  Clears formatting issues and summarizes warnings in `context_for_llms/LINT_WARNINGS.md`.\n- **Validation** – `track-code-changes.mjs`, `validate-accuracy.mjs`\n  Marks docs for updates when code moves.\n- **Reporting** – `generate-changelog.mjs`, `generate-report.mjs`\n  Produces `changelog/docs-YYYY-MM-DD.md` and `reports/ultra-doc-summary.md`.",
+      "tokens": 218,
+      "lines": 15
+    },
+    {
+      "file": "CLAUDE.md",
+      "heading": "Hook Behavior",
+      "level": 2,
+      "line": 63,
+      "content": "## Hook Behavior\n\n`hooks.json` wires Ultra-Doc into Claude Code’s lifecycle. Hooks now set `ULTRA_DOC_AUTO_ACTION` so a single `/ultra-doc` command can run in non-interactive mode:\n\n- **PreCommit** – `ULTRA_DOC_AUTO_ACTION=quick /ultra-doc` so no one commits stale docs.\n- **SessionStart** – Prints the most recent `changelog/docs-*.md` entry into Claude’s context.\n- **UserPromptSubmit (deploy/ship/release)** – `ULTRA_DOC_AUTO_ACTION=quick /ultra-doc` before risky operations.\n- **PostToolUse (write_to_file)** – `ULTRA_DOC_AUTO_ACTION=sync /ultra-doc` when someone edits `context_for_llms`.\n- **Idle** – `ULTRA_DOC_AUTO_ACTION=summary /ultra-doc` if the repo sits idle with pending work.\n\nUpdate the README section **“Automated Hooks”** if you change this file so humans know what will fire unexpectedly.",
+      "tokens": 202,
+      "lines": 12
+    },
+    {
+      "file": "CLAUDE.md",
+      "heading": "Troubleshooting",
+      "level": 2,
+      "line": 75,
+      "content": "## Troubleshooting\n\n1. **Docs missing or out of sync** – Run `/ultra-doc` (or `ULTRA_DOC_AUTO_ACTION=sync /ultra-doc`) to rebuild overlays, regenerate human docs, and re-run linting in one go.\n2. **Parity errors** – `generate-human-doc.mjs` now fails when a machine doc is newer than its human twin. Re-run `/ultra-doc` to regenerate translations.\n3. **Missing file references** – The linter now flags inline references (like `` `skills/ultra-doc/scripts/generate-report.mjs` ``) that point to non-existent paths. If you see this warning, either fix the reference or create the missing file.\n4. **Validation noise** – Inspect `context_for_llms/DOC_STATE.json` and `context_for_llms/LINT_WARNINGS.md` for root causes.\n5. **Version drift** – If `.ultra-doc.config.json` shows an older version than `package.json`, rerun the installer via `/ultra-doc install`.\nKeep this document up to date; Claude reads it first before touching anything else in the repo.",
+      "tokens": 239,
+      "lines": 9
+    },
+    {
+      "file": "LINT_WARNINGS.md",
+      "heading": "Documentation Lint Warnings",
+      "level": 1,
+      "line": 3,
+      "content": "# Documentation Lint Warnings\n\nNo warnings or errors found.",
+      "tokens": 15,
       "lines": 4
+    },
+    {
+      "file": "LINT_WARNINGS.md",
+      "heading": "Validation Snapshot",
+      "level": 2,
+      "line": 7,
+      "content": "## Validation Snapshot\nAccuracy: 100%\n- Errors: 0\n- Warnings: 0",
+      "tokens": 16,
+      "lines": 5
+    },
+    {
+      "file": "LINT_WARNINGS.md",
+      "heading": "Parity Snapshot",
+      "level": 2,
+      "line": 12,
+      "content": "## Parity Snapshot\n- Human documentation outdated for: CLAUDE.md\n- Human documentation outdated for: LINT_WARNINGS.md",
+      "tokens": 30,
+      "lines": 4
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Ultra-Doc Command & Script Reference",
+      "level": 1,
+      "line": 3,
+      "content": "# Ultra-Doc Command & Script Reference",
+      "tokens": 10,
+      "lines": 2
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Slash Command",
+      "level": 2,
+      "line": 5,
+      "content": "## Slash Command\n\n- **Command:** `/ultra-doc`\n- **Source:** `commands/ultra-doc.md`\n- **Skill Manifest:** `skills/ultra-doc/SKILL.md`\n\nRunning the command launches `index.js`, which spawns `skills/ultra-doc/scripts/orchestrator.mjs`. The orchestrator:\n\n1. Checks installation/version by reading `.ultra-doc.config.json`.\n2. Runs `analyze-doc-state.mjs` (and, when needed, `track-code-changes.mjs` + `validate-accuracy.mjs`).\n3. Chooses the optimal workflow (sync, validation, or reporting).\n4. Prints findings plus the next steps for the user.",
+      "tokens": 136,
+      "lines": 13
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Decision Tree & Presets",
+      "level": 2,
+      "line": 18,
+      "content": "## Decision Tree & Presets\n\n- By default the orchestrator analyzes repo health, then either auto-runs the necessary fixes (when stale docs are detected) or prompts the user to choose an action.\n- Hooks or CI flows can set `ULTRA_DOC_AUTO_ACTION` to skip the prompt.\n\n| `ULTRA_DOC_AUTO_ACTION` | Behavior |\n| --- | --- |\n| _(unset)_ | Interactive menu (full sync recommended when issues exist). |\n| `sync` | Run `sync-doc-metadata.mjs` end-to-end (metadata → translation → lint → reporting). |\n| `quick` | Run timestamps + autofix + lint only. |\n| `validate` | Run `track-code-changes.mjs` + `validate-accuracy.mjs`. |\n| `summary` | Regenerate `reports/ultra-doc-summary.md` and print its path. |\n\nFull sync automatically runs `track-code-changes.mjs`, `sync-doc-metadata.mjs`, and `validate-accuracy.mjs` in that order so overlays, timestamps, and validations stay current without extra commands.",
+      "tokens": 224,
+      "lines": 15
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Automation Scripts",
+      "level": 2,
+      "line": 33,
+      "content": "## Automation Scripts",
+      "tokens": 6,
+      "lines": 2
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Core",
+      "level": 3,
+      "line": 35,
+      "content": "### Core\n- **`orchestrator.mjs`** – Implements the decision tree and version check.\n- **`sync-doc-metadata.mjs`** – Full pipeline wrapper (timestamps, overlays, translation, parity enforcement, lint, changelog, report).",
+      "tokens": 55,
+      "lines": 4
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Generators (Overlays & Graphs)",
+      "level": 3,
+      "line": 39,
+      "content": "### Generators (Overlays & Graphs)\n- **`generate-section-index.mjs`** – Creates `SECTIONS.json`.\n- **`generate-llm-index.mjs`** – Updates `llms.txt` + `context_for_llms/INDEX.md`.\n- **`generate-code-pointers.mjs`** – Produces `CODE_POINTERS.json` with `doc.md#Section` → `[\"skills/...\"]`.\n- **`render-relationships.mjs`** – Maps script imports into `RELATIONSHIPS.json`.",
+      "tokens": 93,
+      "lines": 6
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Content & Reporting",
+      "level": 3,
+      "line": 45,
+      "content": "### Content & Reporting\n- **`generate-human-doc.mjs`** – Builds human-readable “Mike Dion” docs and enforces parity.\n- **`generate-changelog.mjs`** – Writes daily entries in `changelog/docs-YYYY-MM-DD.md`.\n- **`generate-report.mjs`** – Refreshes `reports/ultra-doc-summary.md`.",
+      "tokens": 70,
+      "lines": 5
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Analysis & Validation",
+      "level": 3,
+      "line": 50,
+      "content": "### Analysis & Validation\n- **`analyze-doc-state.mjs`** – Generates `DOC_STATE.json` (freshness, completeness, priorities).\n- **`track-code-changes.mjs`** – Inspects git history for files referenced in docs.\n- **`validate-accuracy.mjs`** – Compares doc claims to real code via `CODE_POINTERS.json`.\n- **`analyze-coverage.mjs`** – Locates undocumented source files.",
+      "tokens": 91,
+      "lines": 6
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Utilities",
+      "level": 3,
+      "line": 56,
+      "content": "### Utilities\n- **`update-timestamps.mjs`** – Refreshes `Last Updated` headers.\n- **`autofix-linting.mjs`** + **`lint-documentation.mjs`** – Fix/flag template issues and produce `LINT_WARNINGS.md`.\n- **`check-external-links.mjs`** – Optional URL validation.",
+      "tokens": 65,
+      "lines": 5
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Configuration & State Files",
+      "level": 2,
+      "line": 61,
+      "content": "## Configuration & State Files\n\n| File | Description |\n| --- | --- |\n| `.ultra-doc.config.json` | Installation answers + installed version. |\n| `context_for_llms/SECTIONS.json` | Section metadata for token-efficient fetching. |\n| `context_for_llms/CODE_POINTERS.json` | Maps doc sections to source files for validation. |\n| `context_for_llms/RELATIONSHIPS.json` | Script dependency graph. |\n| `context_for_llms/DOC_STATE.json` | Health metrics, stale flags, and priorities. |\n| `context_for_llms/LINT_WARNINGS.md` | Top lint/validation warnings for Claude to cite. |\n| `reports/ultra-doc-summary.md` | Human-readable status summary. |\n| `changelog/docs-YYYY-MM-DD.md` | Append-only log of documentation changes. |",
+      "tokens": 179,
+      "lines": 13
+    },
+    {
+      "file": "api-overview.md",
+      "heading": "Error Handling",
+      "level": 2,
+      "line": 74,
+      "content": "## Error Handling\n\n- Scripts exit with non-zero codes on failure. The orchestrator captures errors and prints remediation steps.\n- `generate-human-doc.mjs` throws if a human doc is missing or older than its machine counterpart.\n- `sync-doc-metadata.mjs` halts immediately if parity or linting fails, preserving context so the user can inspect `LINT_WARNINGS.md` and rerun `/ultra-doc`.",
+      "tokens": 97,
+      "lines": 6
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Ultra-Doc Architecture",
+      "level": 1,
+      "line": 3,
+      "content": "# Ultra-Doc Architecture",
+      "tokens": 6,
+      "lines": 2
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Core Components",
+      "level": 2,
+      "line": 5,
+      "content": "## Core Components\n\n- **Command Surface** (`commands/ultra-doc.md`, `skills/ultra-doc/SKILL.md`)\n  Defines the `/ultra-doc` command, interactive prompts, and capability hints Claude relies on.\n- **Entry Point** (`index.js`, `skills/ultra-doc/scripts/orchestrator.mjs`)\n  Runs whenever `/ultra-doc` is invoked. Handles version checks, reads documentation state, and chooses the next workflow.\n- **Automation Scripts** (`skills/ultra-doc/scripts/*.mjs`)\n  Deterministic jobs that cover sync, overlays, translation, validation, linting, and reporting.\n- **Artifacts** (`context_for_llms/`, `context_for_humans/`, `changelog/`, `reports/`)\n  Machine docs, human translations, metadata overlays, changelog history, and shareable reports.",
+      "tokens": 183,
+      "lines": 11
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Execution Flow",
+      "level": 2,
+      "line": 16,
+      "content": "## Execution Flow\n\n1. **Command Invocation** – `/ultra-doc` routes to `index.js`, which spawns `node skills/ultra-doc/scripts/orchestrator.mjs`.\n2. **Version Gate** – The orchestrator compares `package.json` / `.claude-plugin/plugin.json` with `.ultra-doc.config.json`.\n   If the installed version is behind, it blocks automation and asks for a reinstall.\n3. **State Gathering** – Runs `analyze-doc-state.mjs`, optionally `track-code-changes.mjs` and `validate-accuracy.mjs`.\n   The results populate `context_for_llms/DOC_STATE.json`.\n4. **Decision Tree** – Chooses the next action:\n   - Execute `sync-doc-metadata.mjs` if metadata or translations are stale.\n   - Execute `validate-accuracy.mjs` if validation items exist but metadata is current.\n   - Skip to reporting if everything is healthy.\n5. **Reporting** – Regardless of action, `generate-changelog.mjs` and `generate-report.mjs` run so humans have the same visibility as Claude.",
+      "tokens": 235,
+      "lines": 13
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Automation Scripts",
+      "level": 2,
+      "line": 29,
+      "content": "## Automation Scripts",
+      "tokens": 6,
+      "lines": 2
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Metadata Pipeline",
+      "level": 3,
+      "line": 31,
+      "content": "### Metadata Pipeline\n- `update-timestamps.mjs` – Adds/refreshes `Last Updated` headers on files detected via git.\n- `generate-section-index.mjs` – Builds `SECTIONS.json` with token counts per section.\n- `generate-llm-index.mjs` – Creates `llms.txt` plus `INDEX.md`.\n- `generate-code-pointers.mjs` – Scans docs for inline file references and produces `CODE_POINTERS.json` in the format `doc.md#Section` → `[\"skills/...\"]`.\n- `render-relationships.mjs` – Crawls imports in `skills/ultra-doc/scripts/*.mjs` to map script dependencies inside `RELATIONSHIPS.json`.\n- `sync-doc-metadata.mjs` – Wraps everything above, then triggers translation, parity enforcement, lint + autofix, changelog, and reporting.",
+      "tokens": 176,
+      "lines": 8
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Translation",
+      "level": 3,
+      "line": 39,
+      "content": "### Translation\n- `generate-human-doc.mjs` – Builds human-readable “Mike Dion” files from machine docs, adds context about why each section matters, and fails if parity drifts.",
+      "tokens": 44,
+      "lines": 3
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Validation & Reporting",
+      "level": 3,
+      "line": 42,
+      "content": "### Validation & Reporting\n- `track-code-changes.mjs` – Looks at git history to determine which docs map to changed source files via `CODE_POINTERS.json`.\n- `validate-accuracy.mjs` – Checks doc claims against linked source code and marks stale sections.\n- `generate-changelog.mjs` – Appends touched docs to `changelog/docs-YYYY-MM-DD.md`.\n- `generate-report.mjs` – Refreshes `reports/ultra-doc-summary.md` with doc counts, lint status, and the latest changelog excerpt.",
+      "tokens": 118,
+      "lines": 6
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Data Artifacts",
+      "level": 2,
+      "line": 48,
+      "content": "## Data Artifacts\n\n- **`SECTIONS.json`** – Section metadata for token-efficient streaming into Claude.\n- **`CODE_POINTERS.json`** – Links documentation sections to source files with `lastValidated` timestamps.\n- **`RELATIONSHIPS.json`** – Directed graph (nodes + edges) describing which scripts import which helpers.\n- **`DOC_STATE.json`** – Completeness, staleness, and priority queue for every machine doc.\n- **`LINT_WARNINGS.md` / `AUTOFIX_REPORT.json`** – Output from deterministic linting.\n- **`reports/ultra-doc-summary.md`** – Metrics summary for humans.\n- **`changelog/docs-YYYY-MM-DD.md`** – Append-only log of changed docs per run.",
+      "tokens": 161,
+      "lines": 10
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Dual-Track Model",
+      "level": 2,
+      "line": 58,
+      "content": "## Dual-Track Model\n\n1. Machine docs in `context_for_llms/` are canonical and must always be lint-clean.\n2. Human docs in `context_for_humans/` are regenerated from machine docs through `generate-human-doc.mjs`.\n3. `sync-doc-metadata.mjs` enforces parity; if a human doc is missing or older, the script fails with instructions to re-run `/ultra-doc`.",
+      "tokens": 88,
+      "lines": 6
+    },
+    {
+      "file": "architecture.md",
+      "heading": "Deployment",
+      "level": 2,
+      "line": 64,
+      "content": "## Deployment\n\nUltra-Doc is self-contained; it ships as part of this repo and runs locally inside Claude Code.\n- Installation just copies files and writes `.ultra-doc.config.json`.\n- Hooks listed in `hooks.json` keep the automation active (PreCommit, SessionStart, UserPromptSubmit, PostToolUse, Idle).\nThere is no server component—everything is deterministic and auditable inside the repository.",
+      "tokens": 99,
+      "lines": 7
+    },
+    {
+      "file": "workflows.md",
+      "heading": "Ultra-Doc Workflows",
+      "level": 1,
+      "line": 3,
+      "content": "# Ultra-Doc Workflows",
+      "tokens": 6,
+      "lines": 2
+    },
+    {
+      "file": "workflows.md",
+      "heading": "Synchronization Pipeline (`/ultra-doc` full sync)",
+      "level": 2,
+      "line": 5,
+      "content": "## Synchronization Pipeline (`/ultra-doc` full sync)\n\n0. **Staleness Scan**\n   - `track-code-changes.mjs` inspects git history + CODE_POINTERS to flag docs that drifted and updates `DOC_STATE.json`.\n1. **Change Detection**\n   - Uses `git diff --name-only HEAD` to find modified docs inside `context_for_llms/`.\n2. **Timestamp Refresh**\n   - Runs `update-timestamps.mjs` only on touched files so linting can compare accurate dates.\n3. **Overlay Generation**\n   - `generate-section-index.mjs` → `SECTIONS.json`\n   - `generate-llm-index.mjs` → `llms.txt` + `INDEX.md`\n   - `generate-code-pointers.mjs` → `CODE_POINTERS.json`\n   - `render-relationships.mjs` → `RELATIONSHIPS.json`\n4. **Translation & Parity**\n   - `generate-human-doc.mjs` rewrites human docs and enforces parity (the script throws if a human doc is missing or older).\n5. **Parity Verification**\n   - `sync-doc-metadata.mjs` double-checks that every machine doc (excluding `INDEX.md`) has an up-to-date human twin.\n6. **Lint & Autofix**\n   - `autofix-linting.mjs` cleans predictable issues.\n   - `lint-documentation.mjs` prints the top warnings and saves the digest to `LINT_WARNINGS.md`.\n7. **Reporting**\n   - `generate-changelog.mjs` records modified docs in `changelog/docs-YYYY-MM-DD.md`.\n   - `generate-report.mjs` refreshes `reports/ultra-doc-summary.md`.\n8. **Accuracy Validation**\n   - `validate-accuracy.mjs` compares documentation claims to the referenced code paths and fails fast when mismatches remain (`context_for_llms/VALIDATION.json` captures the findings).",
+      "tokens": 384,
+      "lines": 26
+    },
+    {
+      "file": "workflows.md",
+      "heading": "Translation Workflow (`generate-human-doc.mjs`)",
+      "level": 2,
+      "line": 31,
+      "content": "## Translation Workflow (`generate-human-doc.mjs`)\n\n1. **Prompt Construction**\n   - Reads machine doc content.\n   - Assembles a deterministic prompt that explains tone, structure, and audience.\n2. **Humanization**\n   - Sections are summarized into conversational paragraphs.\n   - Key files (inline code references) are surfaced as callouts.\n3. **Output Controls**\n   - Adds YAML front matter (source file, timestamp, translation engine).\n   - Ensures text materially differs from the machine doc.\n4. **Logging**\n   - Writes the prompt into `skills/logs/prompt-<filename>.txt` for auditing.",
+      "tokens": 148,
+      "lines": 14
+    },
+    {
+      "file": "workflows.md",
+      "heading": "Validation Workflow",
+      "level": 2,
+      "line": 45,
+      "content": "## Validation Workflow\n\n1. **Narrow Path Discovery**\n   - `CODE_POINTERS.json` links `doc.md#Section` to actual source files (e.g., `skills/ultra-doc/scripts/sync-doc-metadata.mjs`).\n2. **Code Change Detection**\n   - `track-code-changes.mjs` reads git history to see if linked files changed after a doc was last updated.\n3. **Accuracy Check**\n   - `validate-accuracy.mjs` compares doc claims with actual code snippets.\n   - Emits entries in `VALIDATION.json` when mismatches are found.\n4. **Priorities**\n   - `analyze-doc-state.mjs` marks affected docs with `validationNeeded: true`, ensuring the orchestrator recommends fixes first.",
+      "tokens": 159,
+      "lines": 12
+    },
+    {
+      "file": "workflows.md",
+      "heading": "Reporting & Visibility",
+      "level": 2,
+      "line": 57,
+      "content": "## Reporting & Visibility\n\n| Artifact | Generator | Purpose |\n| --- | --- | --- |\n| `context_for_llms/LINT_WARNINGS.md` | `lint-documentation.mjs` | Machine-readable digest of issues for Claude/AI workflows. |\n| `changelog/docs-YYYY-MM-DD.md` | `generate-changelog.mjs` | Human-friendly log of which docs changed and when. |\n| `reports/ultra-doc-summary.md` | `generate-report.mjs` | Shareable summary (doc counts, lint status, latest changelog link). |",
+      "tokens": 114,
+      "lines": 8
+    },
+    {
+      "file": "workflows.md",
+      "heading": "Hooks-Initiated Runs",
+      "level": 2,
+      "line": 65,
+      "content": "## Hooks-Initiated Runs\n\n| Hook | Trigger | Command |\n| --- | --- | --- |\n| `PreCommit` | Before Claude stages or commits files. | `ULTRA_DOC_AUTO_ACTION=quick /ultra-doc` |\n| `SessionStart` | User opens the repo in Claude Code. | Prints latest changelog entry. |\n| `UserPromptSubmit` (`deploy|ship|release`) | High-risk prompts. | `ULTRA_DOC_AUTO_ACTION=quick /ultra-doc` |\n| `PostToolUse` (`write_to_file` touching `context_for_llms`) | Manual doc edits. | `ULTRA_DOC_AUTO_ACTION=sync /ultra-doc` |\n| `Idle` | User idle while docs pending. | `ULTRA_DOC_AUTO_ACTION=summary /ultra-doc` |\n\nHooks ensure that even if the human forgets to run `/ultra-doc`, automation still keeps docs aligned.",
+      "tokens": 173,
+      "lines": 12
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "ultra-doc",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "LLM-optimized documentation system for Claude Code - creates structured documentation with JSON overlays for token-efficient AI context",
   "main": "index.js",
   "type": "module",

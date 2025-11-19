@@ -3,7 +3,7 @@ name: ultra-doc
 description: AI-driven documentation system that analyzes, writes, maintains, and validates documentation automatically. Detects code changes, finds errors, and keeps docs perfectly synced with your codebase. Use when user runs /ultra-doc command.
 ---
 
-# Ultra-Doc: AI Documentation System v1.0
+# Ultra-Doc: AI Documentation System v2.0
 
 This skill enables you to intelligently manage documentation through analysis, validation, and automated fixes.
 

@@ -22,9 +22,14 @@ if (!fs.existsSync(CHANGELOG_DIR)) {
 
 function getChangedFiles() {
     try {
-        const output = execSync('git diff --name-only HEAD', { encoding: 'utf-8' });
-        return output.split('\n')
-            .filter(line => line.trim() !== '')
+        const tracked = execSync('git diff --name-only HEAD', { encoding: 'utf-8' })
+            .split('\n')
+            .filter(Boolean);
+        const untracked = execSync('git ls-files --others --exclude-standard', { encoding: 'utf-8' })
+            .split('\n')
+            .filter(Boolean);
+
+        return [...new Set([...tracked, ...untracked])]
             .filter(line => line.includes('context_for_llms/') || line.includes('context_for_humans/'));
     } catch (error) {
         return [];

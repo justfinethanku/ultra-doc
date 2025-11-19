@@ -5,6 +5,7 @@
  *
  * Analyzes documentation health and generates DOC_STATE.json
  * Tracks completeness, freshness, and validation status of all docs
+ * Uses CODE_POINTERS.json and RELATIONSHIPS.json for deep analysis.
  */
 
 import fs from 'fs';
@@ -15,8 +16,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configuration
-const DOCS_DIR = path.join(process.cwd(), 'context_for_llms');
+const ROOT_DIR = process.cwd();
+const DOCS_DIR = path.join(ROOT_DIR, 'context_for_llms');
 const CODE_POINTERS_FILE = path.join(DOCS_DIR, 'CODE_POINTERS.json');
+const RELATIONSHIPS_FILE = path.join(DOCS_DIR, 'RELATIONSHIPS.json');
 const OUTPUT_FILE = path.join(DOCS_DIR, 'DOC_STATE.json');
 
 /**
@@ -57,7 +60,6 @@ function analyzeMarkdownFile(filePath) {
   const codeBlocks = (content.match(/```/g) || []).length / 2;
 
   // Simple completeness score (0-1)
-  // Based on: has headings, has content, has examples
   let completeness = 0;
   if (sectionCount > 0) completeness += 0.3;
   if (wordCount > 200) completeness += 0.3;
@@ -104,15 +106,31 @@ function analyzeDocState() {
     process.exit(1);
   }
 
-  // Load CODE_POINTERS.json if it exists
+  // Load Overlays
   let codePointers = {};
   if (fs.existsSync(CODE_POINTERS_FILE)) {
     codePointers = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
   }
+  const pointerEntries = codePointers.pointers || codePointers;
+
+  let relationships = { nodes: [], edges: [] };
+  if (fs.existsSync(RELATIONSHIPS_FILE)) {
+    relationships = JSON.parse(fs.readFileSync(RELATIONSHIPS_FILE, 'utf-8'));
+  }
+
+  // Invert Code Pointers to get Doc -> Sources
+  const docToSources = {};
+  for (const [key, data] of Object.entries(pointerEntries)) {
+    const [docFile] = key.split('#');
+    if (!docToSources[docFile]) docToSources[docFile] = [];
+    if (Array.isArray(data.files)) {
+      docToSources[docFile].push(...data.files);
+    }
+  }
 
   // Get all markdown files
   const files = fs.readdirSync(DOCS_DIR)
-    .filter(f => f.endsWith('.md'))
+    .filter(f => f.endsWith('.md') && f !== 'INDEX.md')
     .map(f => path.join(DOCS_DIR, f));
 
   const state = {
@@ -124,38 +142,30 @@ function analyzeDocState() {
       complete_docs: 0,
       incomplete_docs: 0,
       stale_docs: 0,
-      accuracy_score: 1.0, // Default, will be updated by validation
-      coverage_percentage: 0 // Will be updated by coverage analysis
+      accuracy_score: 1.0,
+      coverage_percentage: 0,
+      total_relationships: relationships.edges.length
     },
     priorities: []
   };
 
   // Analyze each file
   for (const filePath of files) {
-    const relativePath = path.relative(process.cwd(), filePath);
+    const relativePath = path.relative(ROOT_DIR, filePath);
     const fileName = path.basename(filePath);
 
     const lastUpdated = getFileModTime(filePath);
     const analysis = analyzeMarkdownFile(filePath);
 
-    // Get linked code files from CODE_POINTERS
-    const linkedFiles = [];
+    // Get linked code files
+    const linkedFiles = docToSources[fileName] || [];
     let lastCodeChange = null;
 
-    for (const [key, value] of Object.entries(codePointers)) {
-      if (key.startsWith(fileName)) {
-        if (value.files) {
-          linkedFiles.push(...value.files);
-
-          // Check modification time of linked files
-          for (const codeFile of value.files) {
-            const codeFilePath = path.join(process.cwd(), codeFile);
-            const modTime = getFileModTime(codeFilePath);
-            if (modTime && (!lastCodeChange || modTime > lastCodeChange)) {
-              lastCodeChange = modTime;
-            }
-          }
-        }
+    for (const codeFile of linkedFiles) {
+      const codeFilePath = path.join(ROOT_DIR, codeFile);
+      const modTime = getFileModTime(codeFilePath);
+      if (modTime && (!lastCodeChange || modTime > lastCodeChange)) {
+        lastCodeChange = modTime;
       }
     }
 
@@ -205,6 +215,12 @@ function analyzeDocState() {
     }
   }
 
+  // Calculate Coverage (Files documented / Total source files)
+  const docsWithPointers = Object.keys(docToSources).length;
+  state.metrics.coverage_percentage = files.length > 0
+    ? Math.round((docsWithPointers / files.length) * 100)
+    : 0;
+
   // Sort priorities by impact
   const impactOrder = { critical: 0, high: 1, medium: 2, low: 3 };
   state.priorities.sort((a, b) => impactOrder[a.impact] - impactOrder[b.impact]);
@@ -216,7 +232,8 @@ function analyzeDocState() {
   console.log(`  Complete: ${state.metrics.complete_docs}`);
   console.log(`  Incomplete: ${state.metrics.incomplete_docs}`);
   console.log(`  Stale: ${state.metrics.stale_docs}`);
-  console.log(`  Priorities identified: ${state.priorities.length}`);
+  console.log(`  Coverage: ${state.metrics.coverage_percentage}%`);
+  console.log(`  Relationships: ${state.metrics.total_relationships}`);
   console.log(`\n✓ DOC_STATE.json generated: ${OUTPUT_FILE}`);
 }
 

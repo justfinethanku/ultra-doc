@@ -1,0 +1,81 @@
+{
+  "nodes": [
+    {
+      "id": "index.js",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/add-code-pointers.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/analyze-coverage.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/analyze-doc-state.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/autofix-linting.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/check-external-links.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/generate-changelog.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/generate-code-pointers.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/generate-human-doc.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/generate-llm-index.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/generate-report.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/generate-section-index.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/lint-documentation.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/orchestrator.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/render-relationships.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/sync-doc-metadata.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/track-code-changes.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/update-timestamps.mjs",
+      "type": "file"
+    },
+    {
+      "id": "skills/ultra-doc/scripts/validate-accuracy.mjs",
+      "type": "file"
+    }
+  ],
+  "edges": []
+}

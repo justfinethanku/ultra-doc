@@ -1,0 +1,433 @@
+{
+  "generated": "2025-11-19T08:29:02.121Z",
+  "total_entries": 27,
+  "pointers": {
+    "CLAUDE.md#Overview": {
+      "files": [
+        "commands/ultra-doc.md",
+        "index.js",
+        "skills/ultra-doc/scripts/orchestrator.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.120Z",
+      "sections": [
+        "Overview"
+      ],
+      "startLine": 5
+    },
+    "CLAUDE.md#Repo Root": {
+      "files": [
+        "SECTIONS.json",
+        "CODE_POINTERS.json",
+        "RELATIONSHIPS.json",
+        "DOC_STATE.json",
+        "reports/ultra-doc-summary.md",
+        "generate-changelog.mjs",
+        ".ultra-doc.config.json"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.120Z",
+      "sections": [
+        "Repo Root"
+      ],
+      "startLine": 19
+    },
+    "CLAUDE.md#Key Scripts (`skills/ultra-doc/scripts/`)": {
+      "files": [
+        "sync-doc-metadata.mjs",
+        "generate-human-doc.mjs",
+        "generate-code-pointers.mjs",
+        "CODE_POINTERS.json",
+        "render-relationships.mjs",
+        "analyze-doc-state.mjs",
+        "track-code-changes.mjs",
+        "validate-accuracy.mjs",
+        "orchestrator.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.120Z",
+      "sections": [
+        "Key Scripts (`skills/ultra-doc/scripts/`)"
+      ],
+      "startLine": 28
+    },
+    "CLAUDE.md#Running `/ultra-doc`": {
+      "files": [
+        "index.js",
+        "node skills/ultra-doc/scripts/orchestrator.mjs",
+        "package.json",
+        ".claude-plugin/plugin.json",
+        ".ultra-doc.config.json",
+        "analyze-doc-state.mjs",
+        "track-code-changes.mjs",
+        "sync-doc-metadata.mjs",
+        "validate-accuracy.mjs",
+        "generate-changelog.mjs",
+        "generate-report.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.120Z",
+      "sections": [
+        "Running `/ultra-doc`"
+      ],
+      "startLine": 36
+    },
+    "CLAUDE.md#Automation Stack": {
+      "files": [
+        "update-timestamps.mjs",
+        "generate-section-index.mjs",
+        "generate-llm-index.mjs",
+        "generate-code-pointers.mjs",
+        "render-relationships.mjs",
+        "generate-human-doc.mjs",
+        "autofix-linting.mjs",
+        "lint-documentation.mjs",
+        "context_for_llms/LINT_WARNINGS.md",
+        "track-code-changes.mjs",
+        "validate-accuracy.mjs",
+        "generate-changelog.mjs",
+        "generate-report.mjs",
+        "changelog/docs-YYYY-MM-DD.md",
+        "reports/ultra-doc-summary.md"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.120Z",
+      "sections": [
+        "Automation Stack"
+      ],
+      "startLine": 48
+    },
+    "CLAUDE.md#Hook Behavior": {
+      "files": [
+        "hooks.json",
+        "changelog/docs-*.md"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.120Z",
+      "sections": [
+        "Hook Behavior"
+      ],
+      "startLine": 63
+    },
+    "CLAUDE.md#Troubleshooting": {
+      "files": [
+        "generate-human-doc.mjs",
+        "skills/ultra-doc/scripts/generate-report.mjs",
+        "context_for_llms/DOC_STATE.json",
+        "context_for_llms/LINT_WARNINGS.md",
+        ".ultra-doc.config.json",
+        "package.json"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.120Z",
+      "sections": [
+        "Troubleshooting"
+      ],
+      "startLine": 75
+    },
+    "api-overview.md#Slash Command": {
+      "files": [
+        "commands/ultra-doc.md",
+        "skills/ultra-doc/SKILL.md",
+        "index.js",
+        "skills/ultra-doc/scripts/orchestrator.mjs",
+        ".ultra-doc.config.json",
+        "analyze-doc-state.mjs",
+        "track-code-changes.mjs",
+        "validate-accuracy.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Slash Command"
+      ],
+      "startLine": 5
+    },
+    "api-overview.md#Decision Tree & Presets": {
+      "files": [
+        "sync-doc-metadata.mjs",
+        "track-code-changes.mjs",
+        "validate-accuracy.mjs",
+        "reports/ultra-doc-summary.md"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Decision Tree & Presets"
+      ],
+      "startLine": 18
+    },
+    "api-overview.md#Core": {
+      "files": [
+        "orchestrator.mjs",
+        "sync-doc-metadata.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Core"
+      ],
+      "startLine": 35
+    },
+    "api-overview.md#Generators (Overlays & Graphs)": {
+      "files": [
+        "generate-section-index.mjs",
+        "SECTIONS.json",
+        "generate-llm-index.mjs",
+        "context_for_llms/INDEX.md",
+        "generate-code-pointers.mjs",
+        "CODE_POINTERS.json",
+        "render-relationships.mjs",
+        "RELATIONSHIPS.json"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Generators (Overlays & Graphs)"
+      ],
+      "startLine": 39
+    },
+    "api-overview.md#Content & Reporting": {
+      "files": [
+        "generate-human-doc.mjs",
+        "generate-changelog.mjs",
+        "changelog/docs-YYYY-MM-DD.md",
+        "generate-report.mjs",
+        "reports/ultra-doc-summary.md"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Content & Reporting"
+      ],
+      "startLine": 45
+    },
+    "api-overview.md#Analysis & Validation": {
+      "files": [
+        "analyze-doc-state.mjs",
+        "DOC_STATE.json",
+        "track-code-changes.mjs",
+        "validate-accuracy.mjs",
+        "CODE_POINTERS.json",
+        "analyze-coverage.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Analysis & Validation"
+      ],
+      "startLine": 50
+    },
+    "api-overview.md#Utilities": {
+      "files": [
+        "update-timestamps.mjs",
+        "autofix-linting.mjs",
+        "lint-documentation.mjs",
+        "LINT_WARNINGS.md",
+        "check-external-links.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Utilities"
+      ],
+      "startLine": 56
+    },
+    "api-overview.md#Configuration & State Files": {
+      "files": [
+        ".ultra-doc.config.json",
+        "context_for_llms/SECTIONS.json",
+        "context_for_llms/CODE_POINTERS.json",
+        "context_for_llms/RELATIONSHIPS.json",
+        "context_for_llms/DOC_STATE.json",
+        "context_for_llms/LINT_WARNINGS.md",
+        "reports/ultra-doc-summary.md",
+        "changelog/docs-YYYY-MM-DD.md"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Configuration & State Files"
+      ],
+      "startLine": 61
+    },
+    "api-overview.md#Error Handling": {
+      "files": [
+        "generate-human-doc.mjs",
+        "sync-doc-metadata.mjs",
+        "LINT_WARNINGS.md"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Error Handling"
+      ],
+      "startLine": 74
+    },
+    "architecture.md#Core Components": {
+      "files": [
+        "commands/ultra-doc.md",
+        "skills/ultra-doc/SKILL.md",
+        "index.js",
+        "skills/ultra-doc/scripts/orchestrator.mjs",
+        "skills/ultra-doc/scripts/*.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Core Components"
+      ],
+      "startLine": 5
+    },
+    "architecture.md#Execution Flow": {
+      "files": [
+        "index.js",
+        "node skills/ultra-doc/scripts/orchestrator.mjs",
+        "package.json",
+        ".claude-plugin/plugin.json",
+        ".ultra-doc.config.json",
+        "analyze-doc-state.mjs",
+        "track-code-changes.mjs",
+        "validate-accuracy.mjs",
+        "context_for_llms/DOC_STATE.json",
+        "sync-doc-metadata.mjs",
+        "generate-changelog.mjs",
+        "generate-report.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Execution Flow"
+      ],
+      "startLine": 16
+    },
+    "architecture.md#Metadata Pipeline": {
+      "files": [
+        "update-timestamps.mjs",
+        "generate-section-index.mjs",
+        "SECTIONS.json",
+        "generate-llm-index.mjs",
+        "INDEX.md",
+        "generate-code-pointers.mjs",
+        "CODE_POINTERS.json",
+        "render-relationships.mjs",
+        "skills/ultra-doc/scripts/*.mjs",
+        "RELATIONSHIPS.json",
+        "sync-doc-metadata.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Metadata Pipeline"
+      ],
+      "startLine": 31
+    },
+    "architecture.md#Translation": {
+      "files": [
+        "generate-human-doc.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Translation"
+      ],
+      "startLine": 39
+    },
+    "architecture.md#Validation & Reporting": {
+      "files": [
+        "track-code-changes.mjs",
+        "CODE_POINTERS.json",
+        "validate-accuracy.mjs",
+        "generate-changelog.mjs",
+        "changelog/docs-YYYY-MM-DD.md",
+        "generate-report.mjs",
+        "reports/ultra-doc-summary.md"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Validation & Reporting"
+      ],
+      "startLine": 42
+    },
+    "architecture.md#Data Artifacts": {
+      "files": [
+        "SECTIONS.json",
+        "CODE_POINTERS.json",
+        "RELATIONSHIPS.json",
+        "DOC_STATE.json",
+        "LINT_WARNINGS.md",
+        "AUTOFIX_REPORT.json",
+        "reports/ultra-doc-summary.md",
+        "changelog/docs-YYYY-MM-DD.md"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Data Artifacts"
+      ],
+      "startLine": 48
+    },
+    "architecture.md#Dual-Track Model": {
+      "files": [
+        "generate-human-doc.mjs",
+        "sync-doc-metadata.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Dual-Track Model"
+      ],
+      "startLine": 58
+    },
+    "architecture.md#Deployment": {
+      "files": [
+        ".ultra-doc.config.json",
+        "hooks.json"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Deployment"
+      ],
+      "startLine": 64
+    },
+    "workflows.md#Synchronization Pipeline (`/ultra-doc` full sync)": {
+      "files": [
+        "track-code-changes.mjs",
+        "DOC_STATE.json",
+        "update-timestamps.mjs",
+        "generate-section-index.mjs",
+        "SECTIONS.json",
+        "generate-llm-index.mjs",
+        "INDEX.md",
+        "generate-code-pointers.mjs",
+        "CODE_POINTERS.json",
+        "render-relationships.mjs",
+        "RELATIONSHIPS.json",
+        "generate-human-doc.mjs",
+        "sync-doc-metadata.mjs",
+        "autofix-linting.mjs",
+        "lint-documentation.mjs",
+        "LINT_WARNINGS.md",
+        "generate-changelog.mjs",
+        "changelog/docs-YYYY-MM-DD.md",
+        "generate-report.mjs",
+        "reports/ultra-doc-summary.md",
+        "validate-accuracy.mjs",
+        "context_for_llms/VALIDATION.json"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Synchronization Pipeline (`/ultra-doc` full sync)"
+      ],
+      "startLine": 5
+    },
+    "workflows.md#Validation Workflow": {
+      "files": [
+        "CODE_POINTERS.json",
+        "skills/ultra-doc/scripts/sync-doc-metadata.mjs",
+        "track-code-changes.mjs",
+        "validate-accuracy.mjs",
+        "VALIDATION.json",
+        "analyze-doc-state.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Validation Workflow"
+      ],
+      "startLine": 45
+    },
+    "workflows.md#Reporting & Visibility": {
+      "files": [
+        "context_for_llms/LINT_WARNINGS.md",
+        "lint-documentation.mjs",
+        "changelog/docs-YYYY-MM-DD.md",
+        "generate-changelog.mjs",
+        "reports/ultra-doc-summary.md",
+        "generate-report.mjs"
+      ],
+      "lastValidated": "2025-11-19T08:29:02.121Z",
+      "sections": [
+        "Reporting & Visibility"
+      ],
+      "startLine": 57
+    }
+  }
+}

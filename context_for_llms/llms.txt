@@ -23,7 +23,11 @@ Welcome! This directory contains LLM-optimized documentation for this project.
 
 ### Available Files
 
-- test-sync.md
+- CLAUDE.md
+- LINT_WARNINGS.md
+- api-overview.md
+- architecture.md
+- workflows.md
 
 ### JSON Overlays
 
