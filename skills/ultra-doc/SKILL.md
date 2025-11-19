@@ -34,6 +34,7 @@ Activate this skill when:
 
 ```
 on /ultra-doc:
+  check_version()
   analyze_current_state()
 
   if not_installed:
@@ -49,6 +50,7 @@ on /ultra-doc:
     menu = generate_contextual_menu(findings)
     choice = ask_user_choice(menu)
     execute_action(choice)
+    generate_changelog_and_report()
     report_results()
 ```
 
@@ -305,19 +307,22 @@ See [reference.md - Function Documentation Template](reference.md#documentation-
 
 **What it does:**
 - Runs complete analysis pipeline
+- Syncs metadata and timestamps
+- Generates human-readable docs
 - Fixes all auto-fixable issues
 - Updates all stale documentation
 - Validates everything
 - Reports final state
 
 **Process:**
-1. Run all analysis scripts in sequence
-2. Execute deterministic fixes
-3. Execute AI fixes for errors
-4. Update stale docs
-5. Validate all changes
-6. Commit all updates
-7. Generate comprehensive report
+1. Run `sync-doc-metadata.mjs` (updates timestamps, indexes, linter)
+2. Run `generate-human-doc.mjs` (translates/updates human docs)
+3. Execute deterministic fixes
+4. Execute AI fixes for errors
+5. Update stale docs
+6. Validate all changes
+7. Commit all updates
+8. Run `generate-changelog.mjs` and `generate-report.mjs`
 
 ### Action 5: Show Detailed Analysis
 

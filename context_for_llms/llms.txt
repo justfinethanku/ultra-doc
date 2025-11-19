@@ -1,0 +1,44 @@
+# AI Assistant Navigation Guide
+
+## Getting Started
+
+Welcome! This directory contains LLM-optimized documentation for this project.
+
+### Quick Start
+
+1. **Read CLAUDE.md first** - This is the main entry point with project overview and navigation guide
+2. **Use INDEX.md** - File inventory and quick reference
+3. **Check JSON overlays** for efficient context fetching:
+   - SECTIONS.json - Token-optimized content sections
+   - CODE_POINTERS.json - Documentation to source code mappings
+   - RELATIONSHIPS.json - Dependency and relationship graph
+
+### Best Practices for AI Assistants
+
+- **Start with CLAUDE.md** to understand project structure and documentation layout
+- **Use SECTIONS.json** to fetch specific sections instead of entire files (saves tokens)
+- **Check CODE_POINTERS.json** to find relevant source files for a documentation topic
+- **Reference RELATIONSHIPS.json** to understand dependencies and relationships
+- **Prefer INDEX.md** for quick file lookup
+
+### Available Files
+
+- test-sync.md
+
+### JSON Overlays
+
+- SECTIONS.json - Tokenized content sections with metadata
+- CODE_POINTERS.json - Mappings from documentation to source code
+- RELATIONSHIPS.json - Project dependencies and documentation relationships
+
+## Navigation Tips
+
+- Documentation is organized by topic, not by source code structure
+- Each markdown file focuses on a specific aspect of the project
+- JSON overlays provide structured, queryable metadata
+- All documentation is kept up-to-date with automated scripts
+
+## For Human Readers
+
+This documentation is designed to be useful for both AI assistants and humans.
+Start with CLAUDE.md for an overview, then explore the topic-specific documents.

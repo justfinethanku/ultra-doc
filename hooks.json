@@ -1,0 +1,27 @@
+{
+    "hooks": [
+        {
+            "type": "PreCommit",
+            "command": "/ultra-doc --quick",
+            "description": "Run Ultra-Doc quick check before committing"
+        },
+        {
+            "type": "SessionStart",
+            "command": "cat changelog/$(ls -t changelog | head -n 1) 2>/dev/null || echo 'No recent doc changes.'",
+            "description": "Show recent documentation changes on startup"
+        },
+        {
+            "type": "UserPromptSubmit",
+            "regex": "(deploy|ship|release)",
+            "command": "/ultra-doc --quick",
+            "description": "Check docs before deployment"
+        },
+        {
+            "type": "PostToolUse",
+            "tool": "write_to_file",
+            "condition": "args.TargetFile.includes('context_for_llms')",
+            "command": "/ultra-doc --sync",
+            "description": "Sync metadata when docs are manually edited"
+        }
+    ]
+}

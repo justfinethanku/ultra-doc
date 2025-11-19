@@ -207,6 +207,53 @@ function fixHeadingSpacing(content) {
 }
 
 /**
+ * Normalize headings (convert bold/colon or incorrect levels to proper headings)
+ */
+function fixHeadingNormalization(content) {
+  const lines = content.split('\n');
+  const fixedLines = [];
+  let madeChanges = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    let newLine = line;
+
+    // Case 1: Bold text with colon (e.g., **File Structure:**) -> ## File Structure
+    const boldMatch = line.match(/^\*\*([A-Za-z ]+):\*\*$/);
+    if (boldMatch) {
+      newLine = `## ${boldMatch[1]}`;
+      fixes.fixDetails.push({
+        type: 'heading-normalization',
+        line: i + 1,
+        before: line,
+        after: newLine,
+        description: 'Normalized bold text to H2 heading'
+      });
+      madeChanges = true;
+    }
+
+    // Case 2: H3 File Structure -> ## File Structure
+    // (Specific fix mentioned in roadmap)
+    const h3Match = line.match(/^###\s+(.*File Structure.*)$/);
+    if (h3Match) {
+      newLine = `## ${h3Match[1]}`;
+      fixes.fixDetails.push({
+        type: 'heading-normalization',
+        line: i + 1,
+        before: line,
+        after: newLine,
+        description: 'Promoted H3 File Structure to H2'
+      });
+      madeChanges = true;
+    }
+
+    fixedLines.push(newLine);
+  }
+
+  return madeChanges ? fixedLines.join('\n') : content;
+}
+
+/**
  * Process a single markdown file
  */
 function processFile(filePath) {
@@ -244,6 +291,12 @@ function processFile(filePath) {
   const fixedSpacing = fixHeadingSpacing(content);
   if (fixedSpacing !== content) {
     content = fixedSpacing;
+    fileFixCount++;
+  }
+
+  const fixedNormalization = fixHeadingNormalization(content);
+  if (fixedNormalization !== content) {
+    content = fixedNormalization;
     fileFixCount++;
   }
 

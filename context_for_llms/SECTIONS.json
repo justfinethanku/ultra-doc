@@ -1,0 +1,16 @@
+{
+  "generated": "2025-11-19T04:51:17.783Z",
+  "total_sections": 1,
+  "total_tokens": 7,
+  "sections": [
+    {
+      "file": "test-sync.md",
+      "heading": "Test Sync",
+      "level": 1,
+      "line": 3,
+      "content": "# Test Sync\n\nSome content.",
+      "tokens": 7,
+      "lines": 4
+    }
+  ]
+}
