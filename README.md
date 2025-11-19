@@ -36,15 +36,26 @@ When you change code, Ultra-Doc detects it, updates the machine docs, and **auto
 
 ## 📦 Installation
 
-### 1. Install via Claude Code
-Copy and paste this into Claude:
+### 1. Install via Claude Code (Fresh Install Prompt)
+Open Claude Code, start a new chat with the repo, and paste the following message so Claude runs the marketplace commands for you:
 
 ```text
+Hey Claude, please install Ultra-Doc 2.0 from the marketplace so this repo gets the dual-track automation.
 /plugin marketplace add justfinethanku/ultra-doc
 /plugin install ultra-doc@ultra-doc-marketplace
 ```
 
-### 2. Initialize
+### 2. Upgrade from Ultra-Doc 1.x (Migration Prompt)
+Already installed v1? Ask Claude to reinstall so the orchestrator, hooks, and scripts jump to 2.0 without hand-editing anything:
+
+```text
+Hey Claude, this repo still has Ultra-Doc 1.x. Please reinstall the latest Ultra-Doc 2.0 package and rerun its setup so the new orchestrator, hooks, and guardrails take effect.
+/plugin marketplace add justfinethanku/ultra-doc
+/plugin install ultra-doc@ultra-doc-marketplace
+/ultra-doc install
+```
+
+### 3. Initialize
 Run the command to set up the structure in your repo:
 
 ```bash
