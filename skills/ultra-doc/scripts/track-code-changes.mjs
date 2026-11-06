@@ -157,6 +157,19 @@ function trackCodeChanges() {
   // Get changes from last 30 days
   const changes = getFileChanges('30 days ago');
 
+  // Index references once instead of rescanning every section for each change.
+  // Sets preserve pointer order and collapse repeated links to the same doc.
+  const docsBySource = new Map();
+  for (const [key, value] of Object.entries(codePointers)) {
+    if (!Array.isArray(value.files)) continue;
+    const docFile = key.split('#')[0];
+    for (const codeFile of value.files) {
+      if (!changes.has(codeFile)) continue;
+      if (!docsBySource.has(codeFile)) docsBySource.set(codeFile, new Set());
+      docsBySource.get(codeFile).add(docFile);
+    }
+  }
+
   const report = {
     generated: new Date().toISOString(),
     changes_since: '30 days ago',
@@ -167,16 +180,9 @@ function trackCodeChanges() {
   // Find which docs are affected by changes
   for (const [filePath, commits] of changes) {
     // Find docs that reference this file
-    const affectedDocs = new Set();
+    const affectedDocs = docsBySource.get(filePath);
 
-    for (const [key, value] of Object.entries(codePointers)) {
-      if (value.files && value.files.includes(filePath)) {
-        const docFile = key.split('#')[0];
-        affectedDocs.add(docFile);
-      }
-    }
-
-    if (affectedDocs.size > 0) {
+    if (affectedDocs) {
       const analysis = analyzeChangeImpact(filePath, commits);
 
       report.affected_docs.push({

@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node test/security.test.mjs && node test/sync.test.mjs && node test/pointers.test.mjs"
+    "test": "node test/security.test.mjs && node test/sync.test.mjs && node test/pointers.test.mjs && node test/tracking.test.mjs"
   },
   "keywords": [
     "claude",
