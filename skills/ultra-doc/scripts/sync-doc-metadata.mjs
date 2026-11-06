@@ -11,7 +11,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,9 +23,9 @@ const TIMESTAMP_PATTERN = /^(Last Updated|Updated):\s*.*/m;
 function getChangedFiles() {
     try {
         // Get changed files relative to HEAD (staged and unstaged)
-        const output = execSync('git diff --name-only HEAD', { encoding: 'utf-8' });
-        return output.split('\n')
-            .filter(line => line.trim() !== '')
+        const output = execFileSync('git', ['diff', '--name-only', '-z', 'HEAD'], { encoding: 'utf-8' });
+        return output.split('\0')
+            .filter(Boolean)
             .filter(line => line.includes('context_for_llms/') && line.endsWith('.md'));
     } catch (error) {
         console.warn('⚠️ Could not determine changed files via git. Assuming all files might need checks.');
@@ -72,7 +72,7 @@ function runScript(scriptName) {
     if (fs.existsSync(scriptPath)) {
         console.log(`\n▶ Running ${scriptName}...`);
         try {
-            execSync(`node "${scriptPath}"`, { stdio: 'inherit' });
+            execFileSync(process.execPath, [scriptPath], { stdio: 'inherit' });
         } catch (error) {
             console.error(`❌ ${scriptName} failed.`);
             // We don't exit here, we try to continue with other scripts

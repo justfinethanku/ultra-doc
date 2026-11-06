@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"This is a Claude Code plugin - install via /plugin install\" && exit 0"
+    "test": "node test/security.test.mjs"
   },
   "keywords": [
     "claude",
