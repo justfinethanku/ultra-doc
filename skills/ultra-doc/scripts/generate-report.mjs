@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -22,12 +23,12 @@ const VALIDATION_FILE = path.join(LLM_DIR, 'VALIDATION.json');
 
 function countFiles(dir) {
     if (!fs.existsSync(dir)) return 0;
-    return fs.readdirSync(dir).filter(f => f.endsWith('.md') && f !== 'INDEX.md').length;
+    return projectFs.readdirSync(dir).filter(f => f.endsWith('.md') && f !== 'INDEX.md').length;
 }
 
 function getLintStatus() {
     if (!fs.existsSync(LINT_WARNINGS_FILE)) return { count: 0, status: 'Unknown' };
-    const content = fs.readFileSync(LINT_WARNINGS_FILE, 'utf-8');
+    const content = projectFs.readFileSync(LINT_WARNINGS_FILE, 'utf-8');
     const match = content.match(/Found (\d+) issues/);
     const count = match ? parseInt(match[1]) : 0;
     return { count, status: count === 0 ? 'Healthy' : 'Needs Attention' };
@@ -35,11 +36,11 @@ function getLintStatus() {
 
 function getLastChangelog() {
     if (!fs.existsSync(CHANGELOG_DIR)) return 'No changelogs found.';
-    const files = fs.readdirSync(CHANGELOG_DIR).filter(f => f.startsWith('docs-')).sort().reverse();
+    const files = projectFs.readdirSync(CHANGELOG_DIR).filter(f => f.startsWith('docs-')).sort().reverse();
     if (files.length === 0) return 'No changelogs found.';
 
     const lastFile = files[0];
-    const content = fs.readFileSync(path.join(CHANGELOG_DIR, lastFile), 'utf-8');
+    const content = projectFs.readFileSync(path.join(CHANGELOG_DIR, lastFile), 'utf-8');
     // Extract first few lines or just link to it
     return `[${lastFile}](../changelog/${lastFile})\n\n${content.split('\n').slice(0, 10).join('\n')}...`;
 }
@@ -53,7 +54,7 @@ function getDocStateMetrics() {
             priorities: []
         };
     }
-    const state = JSON.parse(fs.readFileSync(DOC_STATE_FILE, 'utf-8'));
+    const state = JSON.parse(projectFs.readFileSync(DOC_STATE_FILE, 'utf-8'));
     return {
         total: state.metrics?.total_docs ?? 0,
         stale: state.metrics?.stale_docs ?? 0,
@@ -71,7 +72,7 @@ function getValidationStatus() {
             status: 'Unknown'
         };
     }
-    const data = JSON.parse(fs.readFileSync(VALIDATION_FILE, 'utf-8'));
+    const data = JSON.parse(projectFs.readFileSync(VALIDATION_FILE, 'utf-8'));
     const results = data.validation_results || {};
     const accuracyPct = results.accuracy_score != null
         ? `${Math.round(results.accuracy_score * 100)}%`
@@ -91,7 +92,7 @@ function getParityStatus() {
         return { status: 'Unknown', issues: [], synced: false };
     }
 
-    const llmFiles = fs.readdirSync(LLM_DIR).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
+    const llmFiles = projectFs.readdirSync(LLM_DIR).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
     const issues = [];
 
     for (const file of llmFiles) {
@@ -103,8 +104,8 @@ function getParityStatus() {
             continue;
         }
 
-        const llmTime = fs.statSync(llmPath).mtimeMs;
-        const humanTime = fs.statSync(humanPath).mtimeMs;
+        const llmTime = projectFs.statSync(llmPath).mtimeMs;
+        const humanTime = projectFs.statSync(humanPath).mtimeMs;
         if (humanTime < llmTime - 1000) {
             issues.push(`Human doc ${file} lags machine doc`);
         }
@@ -163,7 +164,7 @@ ${parity.issues.length > 0 ? `\n### Parity Issues\n${parity.issues.map(issue => 
 - [Full Changelog](../changelog/)
 `;
 
-    fs.writeFileSync(REPORT_FILE, content, 'utf-8');
+    projectFs.writeFileSync(REPORT_FILE, content, 'utf-8');
     console.log(`  ✓ Report generated: ${path.relative(process.cwd(), REPORT_FILE)}`);
 }
 

@@ -8,6 +8,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
@@ -56,11 +57,11 @@ function getGitFiles() {
 function getFilesRecursive(dir, fileList = []) {
   if (!fs.existsSync(dir)) return fileList;
 
-  const files = fs.readdirSync(dir);
+  const files = projectFs.readdirSync(dir);
 
   for (const file of files) {
     const filePath = path.join(dir, file);
-    const stats = fs.statSync(filePath);
+    const stats = projectFs.statSync(filePath);
 
     if (stats.isDirectory()) {
       // Skip node_modules, .git, dist, build, etc.
@@ -102,7 +103,7 @@ function getAllCodeFiles() {
   // Filter to only code files
   return allFiles.filter(f => {
     const ext = path.extname(f);
-    return CODE_EXTENSIONS.includes(ext);
+    return CODE_EXTENSIONS.includes(ext) && projectFs.isFileSync(f);
   });
 }
 
@@ -117,7 +118,7 @@ function countFileUsage(filePath, allFiles) {
 
   for (const file of allFiles) {
     try {
-      const content = fs.readFileSync(file, 'utf-8');
+      const content = projectFs.readFileSync(file, 'utf-8');
 
       // Check for various import patterns
       const patterns = [
@@ -146,7 +147,7 @@ function countFileUsage(filePath, allFiles) {
  */
 function parseExports(filePath) {
   const ext = path.extname(filePath);
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = projectFs.readFileSync(filePath, 'utf-8');
   const exports = [];
 
   if (ext === '.js' || ext === '.jsx' || ext === '.ts' || ext === '.tsx') {
@@ -189,7 +190,7 @@ function analyzeCoverage() {
   // Load CODE_POINTERS.json if it exists
   let codePointers = {};
   if (fs.existsSync(CODE_POINTERS_FILE)) {
-    codePointers = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    codePointers = JSON.parse(projectFs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
   }
 
   // Get documented files from CODE_POINTERS
@@ -268,7 +269,7 @@ function analyzeCoverage() {
   }
 
   // Write output
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(coverage, null, 2));
+  projectFs.writeFileSync(OUTPUT_FILE, JSON.stringify(coverage, null, 2));
 
   console.log(`\n✓ Coverage Analysis Complete:`);
   console.log(`  Total files: ${coverage.coverage_stats.total_files}`);

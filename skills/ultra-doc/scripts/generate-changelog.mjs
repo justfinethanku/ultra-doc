@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -17,7 +18,7 @@ const CHANGELOG_DIR = path.join(process.cwd(), 'changelog');
 
 // Ensure changelog dir exists
 if (!fs.existsSync(CHANGELOG_DIR)) {
-    fs.mkdirSync(CHANGELOG_DIR, { recursive: true });
+    projectFs.mkdirSync(CHANGELOG_DIR, { recursive: true });
 }
 
 function getChangedFiles() {
@@ -53,7 +54,7 @@ function generateChangelog() {
     if (!fs.existsSync(changelogFile)) {
         content = `# Documentation Changelog: ${today}\n\n`;
     } else {
-        content = fs.readFileSync(changelogFile, 'utf-8') + '\n';
+        content = projectFs.readFileSync(changelogFile, 'utf-8') + '\n';
     }
 
     const timestamp = new Date().toLocaleTimeString();
@@ -66,7 +67,7 @@ function generateChangelog() {
 
     content += '\n---\n';
 
-    fs.writeFileSync(changelogFile, content, 'utf-8');
+    projectFs.writeFileSync(changelogFile, content, 'utf-8');
     console.log(`  ✓ Changelog updated: ${path.relative(process.cwd(), changelogFile)}`);
 }
 

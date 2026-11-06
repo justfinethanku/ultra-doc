@@ -8,6 +8,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execFileSync } from 'child_process';
@@ -144,14 +145,14 @@ function trackCodeChanges() {
   // Load CODE_POINTERS.json
   let codePointers = {};
   if (fs.existsSync(CODE_POINTERS_FILE)) {
-    const overlay = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    const overlay = JSON.parse(projectFs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
     codePointers = overlay.pointers || overlay;
   }
 
   // Load DOC_STATE.json
   let docState = { files: {} };
   if (fs.existsSync(DOC_STATE_FILE)) {
-    docState = JSON.parse(fs.readFileSync(DOC_STATE_FILE, 'utf-8'));
+    docState = JSON.parse(projectFs.readFileSync(DOC_STATE_FILE, 'utf-8'));
   }
 
   // Get changes from last 30 days
@@ -217,13 +218,13 @@ function trackCodeChanges() {
 
   // Update DOC_STATE.json
   if (Object.keys(docState.files).length > 0) {
-    fs.writeFileSync(DOC_STATE_FILE, JSON.stringify(docState, null, 2));
+    projectFs.writeFileSync(DOC_STATE_FILE, JSON.stringify(docState, null, 2));
     console.log('✓ Updated DOC_STATE.json with validation flags');
   }
 
   // Save report
   const reportPath = path.join(DOCS_DIR, 'CODE_CHANGES.json');
-  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
+  projectFs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
 
   console.log(`✓ Tracked ${changes.size} code file changes`);
   console.log(`✓ Found ${report.affected_docs.length} documentation files affected`);
@@ -246,14 +247,14 @@ function trackViaFileTimes() {
   // Load CODE_POINTERS.json
   let codePointers = {};
   if (fs.existsSync(CODE_POINTERS_FILE)) {
-    const overlay = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    const overlay = JSON.parse(projectFs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
     codePointers = overlay.pointers || overlay;
   }
 
   // Load DOC_STATE.json
   let docState = { files: {} };
   if (fs.existsSync(DOC_STATE_FILE)) {
-    docState = JSON.parse(fs.readFileSync(DOC_STATE_FILE, 'utf-8'));
+    docState = JSON.parse(projectFs.readFileSync(DOC_STATE_FILE, 'utf-8'));
   }
 
   let changesFound = 0;
@@ -269,13 +270,13 @@ function trackViaFileTimes() {
       const fullPath = path.join(process.cwd(), codeFile);
 
       if (fs.existsSync(fullPath)) {
-        const codeStats = fs.statSync(fullPath);
+        const codeStats = projectFs.statSync(fullPath);
         const codeModTime = codeStats.mtime;
 
         // Get doc mod time
         const docFullPath = path.join(process.cwd(), docPath);
         if (fs.existsSync(docFullPath)) {
-          const docStats = fs.statSync(docFullPath);
+          const docStats = projectFs.statSync(docFullPath);
           const docModTime = docStats.mtime;
 
           // If code is newer than doc
@@ -294,7 +295,7 @@ function trackViaFileTimes() {
 
   // Update DOC_STATE.json
   if (changesFound > 0) {
-    fs.writeFileSync(DOC_STATE_FILE, JSON.stringify(docState, null, 2));
+    projectFs.writeFileSync(DOC_STATE_FILE, JSON.stringify(docState, null, 2));
     console.log(`✓ Found ${changesFound} potentially stale documentation files`);
     console.log('✓ Updated DOC_STATE.json');
   } else {

@@ -7,6 +7,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -22,10 +23,10 @@ const IMPORT_REGEX = /import\s+(?:[^'"]+from\s+)?['"]([^'"]+)['"]/g;
 const REQUIRE_REGEX = /require\(['"]([^'"]+)['"]\)/g;
 
 function scanFiles(dir, fileList = []) {
-  const files = fs.readdirSync(dir);
+  const files = projectFs.readdirSync(dir);
   for (const file of files) {
     const filePath = path.join(dir, file);
-    const stat = fs.statSync(filePath);
+    const stat = projectFs.statSync(filePath);
     if (stat.isDirectory()) {
       if (file !== 'node_modules' && !file.startsWith('.')) {
         scanFiles(filePath, fileList);
@@ -38,7 +39,7 @@ function scanFiles(dir, fileList = []) {
 }
 
 function extractImports(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = projectFs.readFileSync(filePath, 'utf-8');
   const imports = [];
 
   let match;
@@ -56,7 +57,7 @@ function renderRelationships() {
   console.log('🕸️  Rendering Relationships...');
 
   if (!fs.existsSync(LLM_DIR)) {
-    fs.mkdirSync(LLM_DIR, { recursive: true });
+    projectFs.mkdirSync(LLM_DIR, { recursive: true });
   }
 
   const sourceFiles = scanFiles(ROOT_DIR);
@@ -94,7 +95,7 @@ function renderRelationships() {
             target = path.relative(ROOT_DIR, resolved + ext);
             break;
           }
-          if (fs.existsSync(resolved) && fs.statSync(resolved).isFile()) {
+          if (fs.existsSync(resolved) && projectFs.statSync(resolved).isFile()) {
             target = path.relative(ROOT_DIR, resolved);
             break;
           }
@@ -112,7 +113,7 @@ function renderRelationships() {
     }
   }
 
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(relationships, null, 2));
+  projectFs.writeFileSync(OUTPUT_FILE, JSON.stringify(relationships, null, 2));
   console.log(`  ✓ Mapped ${relationships.edges.length} dependencies.`);
 }
 

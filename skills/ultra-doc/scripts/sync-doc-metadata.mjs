@@ -10,6 +10,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -36,7 +37,7 @@ function getChangedFiles() {
 function updateFileTimestamp(filePath) {
     if (!fs.existsSync(filePath)) return false;
 
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = projectFs.readFileSync(filePath, 'utf-8');
     const now = new Date().toISOString().split('T')[0];
     let newContent = content;
     let updated = false;
@@ -61,7 +62,7 @@ function updateFileTimestamp(filePath) {
     }
 
     if (updated) {
-        fs.writeFileSync(filePath, newContent, 'utf-8');
+        projectFs.writeFileSync(filePath, newContent, 'utf-8');
         console.log(`  ✓ Updated timestamp: ${path.basename(filePath)}`);
     }
     return updated;
@@ -84,7 +85,7 @@ function verifyParity() {
 
     if (!fs.existsSync(llmDir)) return true;
 
-    const llmFiles = fs.readdirSync(llmDir).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
+    const llmFiles = projectFs.readdirSync(llmDir).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
     const issues = [];
 
     for (const file of llmFiles) {
@@ -93,8 +94,8 @@ function verifyParity() {
             issues.push(`Missing human doc for ${file}`);
             continue;
         }
-        const llmTime = fs.statSync(path.join(llmDir, file)).mtimeMs;
-        const humanTime = fs.statSync(humanPath).mtimeMs;
+        const llmTime = projectFs.statSync(path.join(llmDir, file)).mtimeMs;
+        const humanTime = projectFs.statSync(humanPath).mtimeMs;
         if (humanTime < llmTime) {
             issues.push(`Human doc ${file} is older than machine doc`);
         }

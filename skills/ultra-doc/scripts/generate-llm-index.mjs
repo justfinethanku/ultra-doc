@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -17,8 +18,8 @@ const LLMS_TXT = path.join(CONTEXT_DIR, 'llms.txt');
 const INDEX_MD = path.join(CONTEXT_DIR, 'INDEX.md');
 
 function getFileStats(filePath) {
-  const stats = fs.statSync(filePath);
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const stats = projectFs.statSync(filePath);
+  const content = projectFs.readFileSync(filePath, 'utf-8');
   const lines = content.split('\n').length;
   const chars = content.length;
 
@@ -26,7 +27,7 @@ function getFileStats(filePath) {
 }
 
 function generateLlmsTxt() {
-  const files = fs.readdirSync(CONTEXT_DIR).filter(f =>
+  const files = projectFs.readdirSync(CONTEXT_DIR).filter(f =>
     f.endsWith('.md') && f !== 'INDEX.md'
   );
 
@@ -76,16 +77,16 @@ This documentation is designed to be useful for both AI assistants and humans.
 Start with CLAUDE.md for an overview, then explore the topic-specific documents.
 `;
 
-  fs.writeFileSync(LLMS_TXT, content, 'utf-8');
+  projectFs.writeFileSync(LLMS_TXT, content, 'utf-8');
   console.log('Generated llms.txt');
 }
 
 function generateIndexMd() {
-  const files = fs.readdirSync(CONTEXT_DIR).filter(f =>
+  const files = projectFs.readdirSync(CONTEXT_DIR).filter(f =>
     f.endsWith('.md') && f !== 'INDEX.md'
   );
 
-  const jsonFiles = fs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.json'));
+  const jsonFiles = projectFs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.json'));
 
   let content = `# Documentation Index
 
@@ -102,7 +103,7 @@ This directory contains AI-optimized documentation for navigating and understand
   for (const file of files.sort()) {
     const filePath = path.join(CONTEXT_DIR, file);
     const stats = getFileStats(filePath);
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const fileContent = projectFs.readFileSync(filePath, 'utf-8');
 
     // Extract first heading as description
     const headingMatch = fileContent.match(/^#\s+(.+)/m);
@@ -150,7 +151,7 @@ This directory contains AI-optimized documentation for navigating and understand
   content += `- **JSON overlays**: Structured metadata for AI assistants\n`;
   content += `- **llms.txt**: Navigation guide for AI tools\n\n`;
 
-  fs.writeFileSync(INDEX_MD, content, 'utf-8');
+  projectFs.writeFileSync(INDEX_MD, content, 'utf-8');
   console.log('Generated INDEX.md');
 }
 

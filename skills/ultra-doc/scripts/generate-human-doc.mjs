@@ -7,26 +7,22 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const LLM_DIR = path.join(process.cwd(), 'context_for_llms');
 const HUMAN_DIR = path.join(process.cwd(), 'context_for_humans');
-const DEBUG_DIR = path.join(__dirname, '../../logs');
+const DEBUG_DIR = path.join(process.cwd(), 'logs', 'ultra-doc');
 
 if (!fs.existsSync(HUMAN_DIR)) {
-    fs.mkdirSync(HUMAN_DIR, { recursive: true });
+    projectFs.mkdirSync(HUMAN_DIR, { recursive: true });
 }
 if (!fs.existsSync(DEBUG_DIR)) {
-    fs.mkdirSync(DEBUG_DIR, { recursive: true });
+    projectFs.mkdirSync(DEBUG_DIR, { recursive: true });
 }
 
 function getTimestamp(filePath) {
     if (!fs.existsSync(filePath)) return 0;
-    return fs.statSync(filePath).mtimeMs;
+    return projectFs.statSync(filePath).mtimeMs;
 }
 
 function extractSections(content) {
@@ -121,7 +117,7 @@ function logPrompt(filename, content) {
 Source (${filename}):
 ${content}
 `;
-    fs.writeFileSync(path.join(DEBUG_DIR, `prompt-${filename}.txt`), prompt);
+    projectFs.writeFileSync(path.join(DEBUG_DIR, `prompt-${filename}.txt`), prompt);
 }
 
 function verifyParity(files) {
@@ -154,7 +150,7 @@ function generateHumanDocs() {
         process.exit(1);
     }
 
-    const files = fs.readdirSync(LLM_DIR).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
+    const files = projectFs.readdirSync(LLM_DIR).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
     let updatedCount = 0;
 
     for (const file of files) {
@@ -166,10 +162,10 @@ function generateHumanDocs() {
 
         if (llmTime > humanTime) {
             console.log(`  Translating: ${file}`);
-            const content = fs.readFileSync(llmPath, 'utf-8');
+            const content = projectFs.readFileSync(llmPath, 'utf-8');
             logPrompt(file, content);
             const humanContent = translateContent(content, file);
-            fs.writeFileSync(humanPath, humanContent, 'utf-8');
+            projectFs.writeFileSync(humanPath, humanContent, 'utf-8');
             updatedCount++;
         }
     }
