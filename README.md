@@ -38,8 +38,9 @@ to load the skill. This is a Claude command, not a Bash executable. Ask Claude
 to initialize the project using the [installation flow](skills/ultra-doc/SKILL.md#installation-flow),
 preserving your existing `CLAUDE.md` and documentation.
 
-Plugin installation registers the skill and command; it does not create project
-documentation. The Node orchestrator has no `install` subcommand: without
+Plugin installation registers the skill, command, and [documentation health
+hook](#automatic-hooks); it does not create project documentation. The Node
+orchestrator has no `install` subcommand: without
 `.ultra-doc.config.json` it prints setup advice and exits without creating files.
 The terminal procedure below initializes a disposable project explicitly. The
 marketplace installation was exercised locally; the conversational Claude
@@ -169,17 +170,47 @@ side effects, output locations, exit behavior, configuration, and recovery.
 
 ## Automatic hooks
 
-The root `hooks.json` is a legacy integration sketch. The plugin does not
-register that file, and a fresh Claude Code 2.1.318 install reports `Hooks (0)`.
-Its `/ultra-doc` shell commands cannot run as executables. Do not rely on
-installation to check commits, edits, prompts, or idle sessions automatically.
-Hook integration is tracked in [FLEET-670](https://linear.app/contentionmedia/issue/FLEET-670).
-Use explicit Node invocations until that integration is implemented and tested.
+Claude Code loads `hooks/hooks.json` using its [standard plugin
+layout](https://code.claude.com/docs/en/plugins-reference#hooks). After installing
+version 2.0.1 or later and restarting Claude Code, inspect the registered event:
+
+```bash
+claude plugin details ultra-doc@ultra-doc-marketplace
+```
+
+Expect `Hooks (1)  PostToolUse`. Its `Edit|Write` tool matcher runs a Node handler
+after a successful `Edit` or `Write`. The handler only checks top-level `.md`
+files in `context_for_llms/`, excluding generated `INDEX.md`, in a project with
+`.ultra-doc.config.json`. Other files and uninitialized projects are skipped.
+
+The handler reads Claude Code's [documented JSON input on
+stdin](https://code.claude.com/docs/en/hooks#posttooluse-input), including `cwd`
+and `tool_input.file_path`. It invokes the plugin's `analyze-doc-state.mjs` with
+that `cwd` as the working directory. The check refreshes only
+`context_for_llms/DOC_STATE.json` and returns a short context message to Claude;
+it does not sync metadata indexes, rewrite prose, or generate human overviews.
+Use an explicit workflow for those operations.
+
+The analyzer has a two-second timeout; incomplete stdin times out after one
+second, and payloads over 1 MiB are skipped with a warning. Claude Code also
+limits the hook to five seconds with `onFailure: "continue"`. Malformed input,
+unsafe project paths, failed analysis, and timeouts produce a warning (stderr
+and a JSON `systemMessage`) and exit zero so the user action can continue. The
+hook does not start a Claude session or make an API request.
+
+Verification used a fresh temporary `CLAUDE_CONFIG_DIR` and a local marketplace
+installation with Claude Code 2.1.318. Documented `PostToolUse` payloads for both
+`Write` and `Edit` were piped to the installed hook command; each refreshed
+`DOC_STATE.json` in the temporary project and returned the expected context
+message. This was a stdin fixture check, not a conversational Claude session.
+There are no commit, deployment-prompt, session-start, or idle hooks. Changes
+made through Bash or outside Claude Code do not trigger this tool matcher.
 
 ## Develop and verify
 
 Run `npm test` in the plugin checkout. It executes real CLI regression fixtures
-for subprocess safety, metadata sync, pointer consumption, and change tracking.
+for subprocess safety, metadata sync, pointer consumption, change tracking,
+project containment, and hook input, output, failure, and timeout behavior.
 There is no build step or configured GitHub Actions workflow. `npm install` is
 not needed for these scripts or tests.
 
