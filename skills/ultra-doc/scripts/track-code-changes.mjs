@@ -144,7 +144,8 @@ function trackCodeChanges() {
   // Load CODE_POINTERS.json
   let codePointers = {};
   if (fs.existsSync(CODE_POINTERS_FILE)) {
-    codePointers = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    const overlay = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    codePointers = overlay.pointers || overlay;
   }
 
   // Load DOC_STATE.json
@@ -239,7 +240,8 @@ function trackViaFileTimes() {
   // Load CODE_POINTERS.json
   let codePointers = {};
   if (fs.existsSync(CODE_POINTERS_FILE)) {
-    codePointers = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    const overlay = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    codePointers = overlay.pointers || overlay;
   }
 
   // Load DOC_STATE.json

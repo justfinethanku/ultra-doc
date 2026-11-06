@@ -205,7 +205,8 @@ function validateAccuracy() {
   // Load CODE_POINTERS.json if it exists
   let codePointers = {};
   if (fs.existsSync(CODE_POINTERS_FILE)) {
-    codePointers = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    const overlay = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    codePointers = overlay.pointers || overlay;
   }
 
   const validation = {
@@ -232,6 +233,12 @@ function validateAccuracy() {
     .filter(f => f.endsWith('.md'))
     .map(f => path.join(DOCS_DIR, f));
 
+  // Checks are per document; a document can have several distinct diagnostics.
+  // Include pointer-only documents so broken links cannot yield 100% with no docs.
+  const checkedDocs = new Set(Object.entries(codePointers)
+    .filter(([, value]) => Array.isArray(value.files))
+    .map(([key]) => path.basename(key.split('#')[0])));
+
   // Validate each file
   for (const filePath of files) {
     const relativePath = path.relative(process.cwd(), filePath);
@@ -246,11 +253,12 @@ function validateAccuracy() {
     validation.warnings.push(...codeExampleErrors.filter(e => e.severity === 'warning'));
     validation.errors.push(...codeExampleErrors.filter(e => e.severity === 'error'));
 
-    validation.validation_results.total_checks++;
+    checkedDocs.add(path.basename(filePath));
   }
 
   // Calculate results
-  validation.validation_results.failed = validation.errors.length;
+  validation.validation_results.total_checks = checkedDocs.size;
+  validation.validation_results.failed = new Set(validation.errors.map(error => path.basename(error.docFile))).size;
   validation.validation_results.warnings = validation.warnings.length;
   validation.validation_results.passed =
     validation.validation_results.total_checks - validation.validation_results.failed;
@@ -266,7 +274,7 @@ function validateAccuracy() {
   console.log(`✓ Validation Complete:`);
   console.log(`  Total checks: ${validation.validation_results.total_checks}`);
   console.log(`  Passed: ${validation.validation_results.passed}`);
-  console.log(`  Errors: ${validation.validation_results.failed}`);
+  console.log(`  Errors: ${validation.errors.length}`);
   console.log(`  Warnings: ${validation.validation_results.warnings}`);
   console.log(`  Accuracy: ${Math.round(validation.validation_results.accuracy_score * 100)}%`);
   console.log(`\n✓ VALIDATION.json generated: ${OUTPUT_FILE}`);
