@@ -1,11 +1,11 @@
 {
   "name": "ultra-doc",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "LLM-optimized documentation system for Claude Code - creates structured documentation with JSON overlays for token-efficient AI context",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node test/security.test.mjs && node test/sync.test.mjs && node test/pointers.test.mjs && node test/tracking.test.mjs && node test/containment.test.mjs && node test/project-fs.test.mjs"
+    "test": "node test/security.test.mjs && node test/sync.test.mjs && node test/pointers.test.mjs && node test/tracking.test.mjs && node test/containment.test.mjs && node test/project-fs.test.mjs && node test/hooks.test.mjs"
   },
   "keywords": [
     "claude",

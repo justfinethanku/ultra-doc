@@ -86,7 +86,8 @@ No environment file or service credential is required for these local actions.
 | `Metadata sync failed` or `Orchestrator failed` | Inspect the first failing child script. A failed sync can leave partial output; correct the input and rerun full sync. There is no automatic rollback. |
 | Validation errors after `Sync Complete` | The metadata stage completed, but final validation did not. Read `VALIDATION.json`, correct broken references/examples, then rerun validation. |
 | Unexpected stale-doc or parity status after copying/restoring files | Freshness and parity use modification times. Inspect actual source changes; these scores are review hints, not semantic validation. |
-| Hooks do not run | The legacy root hook file is not registered by the plugin. Use explicit commands; see [FLEET-670](https://linear.app/contentionmedia/issue/FLEET-670). |
+| Hooks do not run | Update to plugin version 2.0.1 or later, restart Claude Code, and confirm `claude plugin details ultra-doc@ultra-doc-marketplace` shows `Hooks (1) PostToolUse`. Only successful `Edit` and `Write` calls on top-level source Markdown in `context_for_llms/` qualify; see [Automatic hooks](../README.md#automatic-hooks). |
+| `Ultra-Doc hook warning` | The health check was skipped or failed without blocking the user action. Read the diagnostic, fix malformed overlays or unsafe paths, and retry. For a two-second timeout, run `analyze-doc-state.mjs` explicitly to diagnose a larger project. |
 
 To undo an unwanted run, inspect `git status` and `git diff`, then restore only
 changes you intend to discard from a known good commit. Generated human docs
@@ -96,7 +97,10 @@ are not a backup of the original source. Keep unrelated edits intact.
 
 The documentation audit executed marketplace add/install/update and component
 inventory in an isolated Claude configuration, plus the Node workflows in fresh
-local projects. It did not run a conversational Claude session, automatically
-install CI, or fire lifecycle hooks. For current plugin mechanics, consult the
+local projects. The hook check installed the local marketplace in a fresh
+temporary `CLAUDE_CONFIG_DIR`, confirmed the `PostToolUse` inventory, and piped
+documented `Edit` and `Write` JSON payloads to the installed command. It checked
+the returned context messages and generated `DOC_STATE.json`. It did not run a
+conversational Claude session or automatically install CI. For current plugin mechanics, consult the
 [Claude Code plugin documentation](https://code.claude.com/docs/en/plugins) and
 [hooks reference](https://code.claude.com/docs/en/hooks).
