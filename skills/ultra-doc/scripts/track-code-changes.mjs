@@ -10,7 +10,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,7 +25,7 @@ const DOC_STATE_FILE = path.join(DOCS_DIR, 'DOC_STATE.json');
  */
 function isGitRepo() {
   try {
-    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    execFileSync('git', ['rev-parse', '--is-inside-work-tree'], { stdio: 'ignore' });
     return true;
   } catch {
     return false;
@@ -37,27 +37,34 @@ function isGitRepo() {
  */
 function getFileChanges(since = '7 days ago') {
   try {
-    const output = execSync(
-      `git log --since="${since}" --name-only --pretty=format:"%H|%at|%s"`,
+    // NUL separates fields and paths; filenames can contain pipes and newlines.
+    // The extra NUL before each hash marks the start of a commit record.
+    const output = execFileSync('git',
+      ['log', `--since=${since}`, '--name-only', '--no-renames', '-z', '--format=%x00%H%x00%at%x00%s'],
       { encoding: 'utf-8' }
     );
 
     const changes = new Map();
-    const lines = output.split('\n');
+    const fields = output.split('\0');
     let currentCommit = null;
+    let firstPath = false;
 
-    for (const line of lines) {
-      if (line.includes('|')) {
-        // Commit line: hash|timestamp|message
-        const [hash, timestamp, ...messageParts] = line.split('|');
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i];
+      if (field === '' && i + 3 < fields.length) {
+        const hash = fields[++i];
+        const timestamp = fields[++i];
+        const message = fields[++i];
         currentCommit = {
           hash,
-          timestamp: parseInt(timestamp) * 1000,
-          message: messageParts.join('|')
+          timestamp: Number(timestamp) * 1000,
+          message
         };
-      } else if (line.trim() && currentCommit) {
-        // File line
-        const file = line.trim();
+        firstPath = true;
+      } else if (field && currentCommit) {
+        // Git inserts one newline between the commit header and its first path.
+        const file = firstPath ? field.slice(1) : field;
+        firstPath = false;
         if (!changes.has(file)) {
           changes.set(file, []);
         }
@@ -80,8 +87,9 @@ function analyzeChangeImpact(filePath, commits) {
     const firstCommit = commits[0].hash;
     const lastCommit = commits[commits.length - 1].hash;
 
-    const diff = execSync(
-      `git diff ${lastCommit} ${firstCommit} -- "${filePath}"`,
+    // Repository paths are data, including shell metacharacters and pathspec magic.
+    const diff = execFileSync('git',
+      ['--literal-pathspecs', 'diff', '--no-ext-diff', '--no-textconv', lastCommit, firstCommit, '--', filePath],
       { encoding: 'utf-8' }
     );
 

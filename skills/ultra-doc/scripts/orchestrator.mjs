@@ -8,7 +8,7 @@
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,7 +28,7 @@ function runScript(scriptName) {
         process.exit(1);
     }
 
-    execSync(`node "${scriptPath}"`, { stdio: 'inherit' });
+    execFileSync(process.execPath, [scriptPath], { stdio: 'inherit' });
 }
 
 function readJson(file) {
