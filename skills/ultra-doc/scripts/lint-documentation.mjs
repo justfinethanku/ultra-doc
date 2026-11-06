@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -211,7 +212,7 @@ const RULES = {
 
 function lintFile(filename) {
   const filePath = path.join(CONTEXT_DIR, filename);
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = projectFs.readFileSync(filePath, 'utf-8');
   const allIssues = [];
 
   for (const [ruleName, rule] of Object.entries(RULES)) {
@@ -233,7 +234,7 @@ function lintDocumentation() {
     process.exit(1);
   }
 
-  const files = fs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md'));
+  const files = projectFs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md'));
   const results = {};
   let totalIssues = 0;
   let errorCount = 0;
@@ -318,7 +319,7 @@ function checkDualDocsConsistency() {
     }];
   }
 
-  const llmFiles = fs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
+  const llmFiles = projectFs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
 
   for (const file of llmFiles) {
     const humanPath = path.join(HUMAN_DIR, file);
@@ -333,8 +334,8 @@ function checkDualDocsConsistency() {
       // For now, just existence is a good start.
       // We could compare mtime, but generate-human-doc.mjs handles that.
       // If we want to be strict, we could check if human doc is OLDER than machine doc.
-      const llmStats = fs.statSync(path.join(CONTEXT_DIR, file));
-      const humanStats = fs.statSync(humanPath);
+      const llmStats = projectFs.statSync(path.join(CONTEXT_DIR, file));
+      const humanStats = projectFs.statSync(humanPath);
 
       // Allow some buffer (e.g. 1 second) for file system operations
       if (humanStats.mtimeMs < llmStats.mtimeMs - 1000) {
@@ -384,7 +385,7 @@ function generateWarningDigest(results, issueCount) {
   }
 
   const digestPath = path.join(CONTEXT_DIR, 'LINT_WARNINGS.md');
-  fs.writeFileSync(digestPath, mdContent);
+  projectFs.writeFileSync(digestPath, mdContent);
   console.log(`\n📝 Warning digest saved to: ${path.relative(process.cwd(), digestPath)}`);
 
   // Print top 5 to console
@@ -409,14 +410,14 @@ function appendHealthSummary(digestPath, parityIssues, parityCheckRan) {
   const paritySummary = buildParitySummary(parityIssues, parityCheckRan);
 
   const extra = `\n## Validation Snapshot\n${validationSummary}\n\n## Parity Snapshot\n${paritySummary}\n`;
-  fs.appendFileSync(digestPath, extra);
+  projectFs.appendFileSync(digestPath, extra);
 }
 
 function buildValidationSummary() {
   if (!fs.existsSync(VALIDATION_FILE)) {
     return 'Validation results unavailable. Run `/ultra-doc --sync` to generate VALIDATION.json.';
   }
-  const data = JSON.parse(fs.readFileSync(VALIDATION_FILE, 'utf-8'));
+  const data = JSON.parse(projectFs.readFileSync(VALIDATION_FILE, 'utf-8'));
   const results = data.validation_results || {};
   const accuracy = results.accuracy_score != null
     ? `${Math.round(results.accuracy_score * 100)}%`

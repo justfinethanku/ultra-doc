@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -21,13 +22,13 @@ function updateTimestamps() {
     return;
   }
 
-  const files = fs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md'));
+  const files = projectFs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md'));
   const now = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
   let updatedCount = 0;
 
   for (const file of files) {
     const filePath = path.join(CONTEXT_DIR, file);
-    let content = fs.readFileSync(filePath, 'utf-8');
+    let content = projectFs.readFileSync(filePath, 'utf-8');
 
     if (TIMESTAMP_PATTERN.test(content)) {
       // Update existing timestamp
@@ -49,7 +50,7 @@ function updateTimestamps() {
       updatedCount++;
     }
 
-    fs.writeFileSync(filePath, content, 'utf-8');
+    projectFs.writeFileSync(filePath, content, 'utf-8');
   }
 
   console.log(`Updated timestamps in ${updatedCount} file(s)`);

@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
@@ -24,7 +25,8 @@ function findSourceFiles() {
     // Use git ls-files if in a git repo for better performance
     const gitFiles = execSync('git ls-files 2>/dev/null || true', { encoding: 'utf-8' })
       .split('\n')
-      .filter(f => f && sourceExtensions.some(ext => f.endsWith(ext)));
+      .filter(f => f && sourceExtensions.some(ext => f.endsWith(ext)))
+      .filter(f => projectFs.isFileSync(f));
 
     if (gitFiles.length > 0) {
       return gitFiles;
@@ -39,7 +41,7 @@ function findSourceFiles() {
   function scan(dir) {
     if (!fs.existsSync(dir)) return;
 
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    const entries = projectFs.readdirSync(dir, { withFileTypes: true });
 
     for (const entry of entries) {
       if (excludeDirs.includes(entry.name)) continue;
@@ -110,7 +112,7 @@ function matchReferencesToFiles(references, sourceFiles) {
       // Search source files for class/function definitions
       for (const file of sourceFiles) {
         try {
-          const content = fs.readFileSync(file, 'utf-8');
+          const content = projectFs.readFileSync(file, 'utf-8');
           const pattern = new RegExp(`(?:class|function|def|fn)\\s+${ref.value}\\b`);
 
           if (pattern.test(content)) {
@@ -132,13 +134,13 @@ function generateCodePointers() {
     process.exit(1);
   }
 
-  const docFiles = fs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md'));
+  const docFiles = projectFs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md'));
   const sourceFiles = findSourceFiles();
   const mappings = {};
 
   for (const docFile of docFiles) {
     const filePath = path.join(CONTEXT_DIR, docFile);
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = projectFs.readFileSync(filePath, 'utf-8');
     const references = extractCodeReferences(content);
     const pointers = matchReferencesToFiles(references, sourceFiles);
 
@@ -162,7 +164,7 @@ function generateCodePointers() {
     mappings
   };
 
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2), 'utf-8');
+  projectFs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2), 'utf-8');
   console.log(`Generated CODE_POINTERS.json with ${Object.keys(mappings).length} doc → source mappings`);
 }
 

@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import readline from 'readline';
 import { execFileSync } from 'child_process';
@@ -33,7 +34,7 @@ function runScript(scriptName) {
 
 function readJson(file) {
     if (!fs.existsSync(file)) return null;
-    return JSON.parse(fs.readFileSync(file, 'utf-8'));
+    return JSON.parse(projectFs.readFileSync(file, 'utf-8'));
 }
 
 function enforceInstallation() {
@@ -122,7 +123,7 @@ function analyzeState() {
     if (!fs.existsSync(DOC_STATE_FILE)) {
         throw new Error('Failed to generate DOC_STATE.json');
     }
-    return JSON.parse(fs.readFileSync(DOC_STATE_FILE, 'utf-8'));
+    return JSON.parse(projectFs.readFileSync(DOC_STATE_FILE, 'utf-8'));
 }
 
 function logHealth(state) {

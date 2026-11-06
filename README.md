@@ -66,6 +66,29 @@ Run the command to set up the structure in your repo:
 
 ## 🛠️ How It Works
 
+### Project file containment
+
+Run scripts with the intended project as the current working directory. All
+project content reads, writes, appends, directory creation and enumeration use
+`skills/ultra-doc/scripts/project-fs.mjs`, including JSON overlays and reports.
+The helper checks lexical and real-path containment for the target and every
+parent up to that root, including existing parents of new outputs. It refuses
+symlinks in any component, even links pointing inside the project, and refuses
+non-regular file targets. Opens use `O_NOFOLLOW` when Node exposes it, and file
+identity is checked again after opening, before truncation.
+
+Directory enumeration skips symlinked files and directories (including dangling
+links and cycles) with a `Skipping unsafe project entry` warning. Git source
+enumeration uses the same policy. Explicitly selected unsafe paths, such as a
+changed Git document or an output file/directory, fail with an
+`Unsafe project path` error. Replace these links with ordinary project files or
+directories before retrying. Humanizer debug prompts now live in the project's
+`logs/ultra-doc/`, rather than the plugin installation's `skills/logs/` directory.
+
+The checks protect against symlinks present when a script runs and recheck paths
+after opening; they are not a sandbox against another process concurrently
+renaming directory trees. Run sync in a project you control.
+
 Ultra-Doc runs a self-healing pipeline every time you invoke it:
 
 ```mermaid

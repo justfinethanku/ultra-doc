@@ -9,6 +9,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -27,7 +28,7 @@ const OUTPUT_FILE = path.join(DOCS_DIR, 'DOC_STATE.json');
  */
 function getFileModTime(filePath) {
   try {
-    const stats = fs.statSync(filePath);
+    const stats = projectFs.statSync(filePath);
     return stats.mtime.toISOString();
   } catch (error) {
     return null;
@@ -48,7 +49,7 @@ function daysBetween(date1, date2) {
  * Analyze a single markdown file
  */
 function analyzeMarkdownFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = projectFs.readFileSync(filePath, 'utf-8');
   const lines = content.split('\n');
 
   // Count sections (headings)
@@ -109,13 +110,13 @@ function analyzeDocState() {
   // Load Overlays
   let codePointers = {};
   if (fs.existsSync(CODE_POINTERS_FILE)) {
-    codePointers = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    codePointers = JSON.parse(projectFs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
   }
   const pointerEntries = codePointers.pointers || codePointers;
 
   let relationships = { nodes: [], edges: [] };
   if (fs.existsSync(RELATIONSHIPS_FILE)) {
-    relationships = JSON.parse(fs.readFileSync(RELATIONSHIPS_FILE, 'utf-8'));
+    relationships = JSON.parse(projectFs.readFileSync(RELATIONSHIPS_FILE, 'utf-8'));
   }
 
   // Invert Code Pointers to get Doc -> Sources
@@ -129,7 +130,7 @@ function analyzeDocState() {
   }
 
   // Get all markdown files
-  const files = fs.readdirSync(DOCS_DIR)
+  const files = projectFs.readdirSync(DOCS_DIR)
     .filter(f => f.endsWith('.md') && f !== 'INDEX.md')
     .map(f => path.join(DOCS_DIR, f));
 
@@ -226,7 +227,7 @@ function analyzeDocState() {
   state.priorities.sort((a, b) => impactOrder[a.impact] - impactOrder[b.impact]);
 
   // Write output
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(state, null, 2));
+  projectFs.writeFileSync(OUTPUT_FILE, JSON.stringify(state, null, 2));
 
   console.log(`✓ Analyzed ${files.length} documentation files`);
   console.log(`  Complete: ${state.metrics.complete_docs}`);

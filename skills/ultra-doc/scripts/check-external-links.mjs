@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import https from 'https';
@@ -98,13 +99,13 @@ async function checkExternalLinks() {
     process.exit(1);
   }
 
-  const files = fs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md'));
+  const files = projectFs.readdirSync(CONTEXT_DIR).filter(f => f.endsWith('.md'));
   const allUrls = new Map(); // url -> [files]
 
   // Collect all URLs
   for (const file of files) {
     const filePath = path.join(CONTEXT_DIR, file);
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = projectFs.readFileSync(filePath, 'utf-8');
     const urls = extractUrls(content);
 
     for (const url of urls) {

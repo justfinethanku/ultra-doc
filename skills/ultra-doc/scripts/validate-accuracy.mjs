@@ -8,6 +8,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -160,7 +161,7 @@ function validateViaCodePointers(codePointers) {
       }
 
       // Check if file was modified recently (potential staleness)
-      const stats = fs.statSync(fullPath);
+      const stats = projectFs.statSync(fullPath);
       const modTime = stats.mtime;
       const now = new Date();
       const daysSinceModified = (now - modTime) / (1000 * 60 * 60 * 24);
@@ -205,7 +206,7 @@ function validateAccuracy() {
   // Load CODE_POINTERS.json if it exists
   let codePointers = {};
   if (fs.existsSync(CODE_POINTERS_FILE)) {
-    const overlay = JSON.parse(fs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
+    const overlay = JSON.parse(projectFs.readFileSync(CODE_POINTERS_FILE, 'utf-8'));
     codePointers = overlay.pointers || overlay;
   }
 
@@ -229,7 +230,7 @@ function validateAccuracy() {
   validation.warnings.push(...codePointerErrors.filter(e => e.severity === 'warning'));
 
   // Get all markdown files
-  const files = fs.readdirSync(DOCS_DIR)
+  const files = projectFs.readdirSync(DOCS_DIR)
     .filter(f => f.endsWith('.md'))
     .map(f => path.join(DOCS_DIR, f));
 
@@ -242,7 +243,7 @@ function validateAccuracy() {
   // Validate each file
   for (const filePath of files) {
     const relativePath = path.relative(process.cwd(), filePath);
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = projectFs.readFileSync(filePath, 'utf-8');
 
     // Validate file paths
     const filePathErrors = validateFilePaths(relativePath, content);
@@ -269,7 +270,7 @@ function validateAccuracy() {
   }
 
   // Write output
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(validation, null, 2));
+  projectFs.writeFileSync(OUTPUT_FILE, JSON.stringify(validation, null, 2));
 
   console.log(`✓ Validation Complete:`);
   console.log(`  Total checks: ${validation.validation_results.total_checks}`);

@@ -10,6 +10,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -259,7 +260,7 @@ function fixHeadingNormalization(content) {
 function processFile(filePath) {
   console.log(`Processing: ${path.basename(filePath)}`);
 
-  let content = fs.readFileSync(filePath, 'utf-8');
+  let content = projectFs.readFileSync(filePath, 'utf-8');
   const originalContent = content;
   let fileFixCount = 0;
 
@@ -302,7 +303,7 @@ function processFile(filePath) {
 
   // Write if changed
   if (content !== originalContent) {
-    fs.writeFileSync(filePath, content);
+    projectFs.writeFileSync(filePath, content);
     fixes.filesModified.push(path.relative(process.cwd(), filePath));
     fixes.totalFixes += fileFixCount;
     console.log(`  ✓ Fixed ${fileFixCount} issues`);
@@ -324,7 +325,7 @@ function autofixLinting() {
   }
 
   // Get all markdown files
-  const files = fs.readdirSync(DOCS_DIR)
+  const files = projectFs.readdirSync(DOCS_DIR)
     .filter(f => f.endsWith('.md'))
     .map(f => path.join(DOCS_DIR, f));
 
@@ -352,7 +353,7 @@ function autofixLinting() {
 
   // Save fix report
   const reportPath = path.join(DOCS_DIR, 'AUTOFIX_REPORT.json');
-  fs.writeFileSync(reportPath, JSON.stringify(fixes, null, 2));
+  projectFs.writeFileSync(reportPath, JSON.stringify(fixes, null, 2));
   console.log(`\n✓ Fix report saved: ${reportPath}`);
 }
 

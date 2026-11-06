@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -80,7 +81,7 @@ function generateSectionIndex() {
     process.exit(1);
   }
 
-  const files = fs.readdirSync(CONTEXT_DIR).filter(f =>
+  const files = projectFs.readdirSync(CONTEXT_DIR).filter(f =>
     f.endsWith('.md') && f !== 'INDEX.md'
   );
 
@@ -88,7 +89,7 @@ function generateSectionIndex() {
 
   for (const file of files) {
     const filePath = path.join(CONTEXT_DIR, file);
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = projectFs.readFileSync(filePath, 'utf-8');
     const sections = extractSections(content, file);
     allSections.push(...sections);
   }
@@ -100,7 +101,7 @@ function generateSectionIndex() {
     sections: allSections
   };
 
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2), 'utf-8');
+  projectFs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2), 'utf-8');
   console.log(`Generated SECTIONS.json with ${allSections.length} sections (${output.total_tokens} estimated tokens)`);
 }
 

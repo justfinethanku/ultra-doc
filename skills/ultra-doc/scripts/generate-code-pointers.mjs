@@ -7,6 +7,7 @@
  */
 
 import fs from 'fs';
+import projectFs from './project-fs.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -59,11 +60,11 @@ function generatePointers() {
         process.exit(1);
     }
 
-    const docFiles = fs.readdirSync(LLM_DIR).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
+    const docFiles = projectFs.readdirSync(LLM_DIR).filter(f => f.endsWith('.md') && f !== 'INDEX.md');
     const pointers = {};
 
     for (const file of docFiles) {
-        const content = fs.readFileSync(path.join(LLM_DIR, file), 'utf-8');
+        const content = projectFs.readFileSync(path.join(LLM_DIR, file), 'utf-8');
         const sections = extractSections(content);
 
         for (const section of sections) {
@@ -87,7 +88,7 @@ function generatePointers() {
         pointers
     };
 
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
+    projectFs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
     console.log(`📌 Generated CODE_POINTERS.json with ${output.total_entries} entries.`);
 }
 
