@@ -69,17 +69,12 @@ function updateFileTimestamp(filePath) {
 
 function runScript(scriptName) {
     const scriptPath = path.join(__dirname, scriptName);
-    if (fs.existsSync(scriptPath)) {
-        console.log(`\n▶ Running ${scriptName}...`);
-        try {
-            execFileSync(process.execPath, [scriptPath], { stdio: 'inherit' });
-        } catch (error) {
-            console.error(`❌ ${scriptName} failed.`);
-            // We don't exit here, we try to continue with other scripts
-        }
-    } else {
-        console.warn(`⚠️ Script not found: ${scriptName}`);
+    if (!fs.existsSync(scriptPath)) {
+        throw new Error(`Required script not found: ${scriptName}`);
     }
+    console.log(`\n▶ Running ${scriptName}...`);
+    // Each stage consumes the previous stage's output. A partial sync is a failure.
+    execFileSync(process.execPath, [scriptPath], { stdio: 'inherit' });
 }
 
 function verifyParity() {
@@ -138,19 +133,22 @@ function syncMetadata() {
         console.log('No changed documentation files detected via git.');
     }
 
-    // 3. Run generators
+    // 3. Finish machine-doc mutations before deriving overlays or translations.
+    runScript('autofix-linting.mjs');
+    const previousSkipParity = process.env.ULTRA_DOC_SKIP_PARITY;
+    try {
+        process.env.ULTRA_DOC_SKIP_PARITY = '1';
+        runScript('lint-documentation.mjs');
+    } finally {
+        if (previousSkipParity === undefined) delete process.env.ULTRA_DOC_SKIP_PARITY;
+        else process.env.ULTRA_DOC_SKIP_PARITY = previousSkipParity;
+    }
+
+    // 4. Index final content, including the digest created by linting.
     runScript('generate-section-index.mjs');
-    runScript('generate-llm-index.mjs');
     runScript('generate-code-pointers.mjs');
     runScript('render-relationships.mjs');
-
-    // 4. Run linter (and autofix before?)
-    // Roadmap says: "Auto-sync metadata before linting"
-    // So we run linter last.
-    runScript('autofix-linting.mjs');
-    process.env.ULTRA_DOC_SKIP_PARITY = '1';
-    runScript('lint-documentation.mjs');
-    delete process.env.ULTRA_DOC_SKIP_PARITY;
+    runScript('generate-llm-index.mjs');
 
     // 5. Regenerate Human Docs post-lint (captures updated digests)
     runScript('generate-human-doc.mjs');
@@ -168,4 +166,9 @@ function syncMetadata() {
     console.log('\n✅ Sync Complete.');
 }
 
-syncMetadata();
+try {
+    syncMetadata();
+} catch (error) {
+    console.error(`\n❌ Metadata sync failed: ${error.message}`);
+    process.exitCode = 1;
+}
