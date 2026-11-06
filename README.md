@@ -1,68 +1,111 @@
-# Ultra-Doc 2.0: Dual-Track Documentation for Humans & AI
+# Ultra-Doc 2.0
 
-<div align="center">
-  <img src="./ultradoc-cover.png" alt="Ultra-Doc Cover" width="100%">
-</div>
+![Ultra-Doc cover](./ultradoc-cover.png)
 
-![Version](https://img.shields.io/badge/version-2.0.0-teal?style=for-the-badge)
-![License](https://img.shields.io/badge/license-MIT-gold?style=for-the-badge)
-![Claude Code](https://img.shields.io/badge/Claude_Code-Plugin-teal?style=for-the-badge)
+Ultra-Doc is a Claude Code plugin for maintaining two documentation folders:
+`context_for_llms/` contains source Markdown and JSON indexes;
+`context_for_humans/` contains generated human overviews. Node scripts handle
+indexing, formatting, reference checks, and reporting. A Claude session can use
+the skill to read code and write or correct prose.
 
-**The first "Dual-Track" documentation system: Machine-perfect context for AI, human-readable narratives for you. Kept in sync, automatically.**
+The humanizer is a local, deterministic Markdown transformation. It does not
+call an AI service, and its output needs review, especially code examples.
+Passing validation checks paths and simple example patterns; it does not prove
+that a document's behavioral claims match the source code.
 
----
+## Install the Claude Code plugin
 
-## 🚀 What is Ultra-Doc 2.0?
+You need Claude Code with plugin support, Node.js, and Git on your `PATH`.
+The local procedures were checked with Node.js 22.22.2 and Claude Code 2.1.318
+on Linux arm64. The package declares Node.js >=14; older versions were not
+verified in this audit. There are no npm dependencies or required API keys for
+the deterministic scripts.
 
-Ultra-Doc is a Claude Code plugin that solves the "Context Rot" problem. It maintains two synchronized sets of documentation:
-
-1.  **`context_for_llms/`**: Optimized, token-efficient, rigid Markdown for Claude.
-2.  **`context_for_humans/`**: Readable, narrative-driven docs for your team.
-
-(Yes, we call them "Mike Dion" files. It's a thing. .md = Mike Dion. Get it? Moving on...)
-
-When you change code, Ultra-Doc detects it, updates the machine docs, and **automatically translates** those updates into human-friendly language.
-
-### Key Features
-- **🔄 Dual-Track Sync**: Never write the same doc twice. AI handles the translation.
-- **🛡️ Auto-Linting & Fixing**: Enforces structure, fixes headings, and adds missing language tags.
-- **🕵️ File Reference Guard**: Inline references to `.mjs/.md/.json` files are linted so dead paths (like that fake `made-up/file.js`) never sneak into the docs.
-- **⏱️ Smart Metadata**: Updates timestamps and "Last Validated" fields only when files actually change.
-- **📉 Token Optimization**: Uses JSON overlays (`SECTIONS.json`, `CODE_POINTERS.json`) to reduce context usage by **up to 90%**.
-- **📝 Automated Changelog**: Generates a `changelog/` entry for every documentation update.
-- **📊 Health Snapshots**: Lint digests append validation + parity stats, and the summary report surfaces stale-doc counts, coverage, validation accuracy, and translation parity.
-
----
-
-## 📦 Installation
-
-### 1. Install via Claude Code (Fresh Install Prompt)
-Open Claude Code, start a new chat with the repo, and paste the following message so Claude runs the marketplace commands for you:
-
-```text
-Hey Claude, please install Ultra-Doc 2.0 from the marketplace so this repo gets the dual-track automation.
-/plugin marketplace add justfinethanku/ultra-doc
-/plugin install ultra-doc@ultra-doc-marketplace
-```
-
-### 2. Upgrade from Ultra-Doc 1.x (Migration Prompt)
-Already installed v1? Ask Claude to reinstall so the orchestrator, hooks, and scripts jump to 2.0 without hand-editing anything:
-
-```text
-Hey Claude, this repo still has Ultra-Doc 1.x. Please reinstall the latest Ultra-Doc 2.0 package and rerun its setup so the new orchestrator, hooks, and guardrails take effect.
-/plugin marketplace add justfinethanku/ultra-doc
-/plugin install ultra-doc@ultra-doc-marketplace
-/ultra-doc install
-```
-
-### 3. Initialize
-Run the command to set up the structure in your repo:
+Run these commands in your terminal to add the marketplace and install the
+plugin in your user configuration:
 
 ```bash
-/ultra-doc
+claude plugin marketplace add justfinethanku/ultra-doc
+claude plugin install ultra-doc@ultra-doc-marketplace
+claude plugin list
 ```
 
----
+The equivalent commands inside Claude Code are `/plugin marketplace add
+justfinethanku/ultra-doc` and `/plugin install
+ultra-doc@ultra-doc-marketplace`. Restart Claude Code after installation. Open
+your target repository and select `/ultra-doc:ultra-doc` from command completion
+to load the skill. This is a Claude command, not a Bash executable. Ask Claude
+to initialize the project using the [installation flow](skills/ultra-doc/SKILL.md#installation-flow),
+preserving your existing `CLAUDE.md` and documentation.
+
+Plugin installation registers the skill and command; it does not create project
+documentation. The Node orchestrator has no `install` subcommand: without
+`.ultra-doc.config.json` it prints setup advice and exits without creating files.
+The terminal procedure below initializes a disposable project explicitly. The
+marketplace installation was exercised locally; the conversational Claude
+initialization flow was not exercised by that check.
+
+To update an existing installation, run `claude plugin marketplace update
+ultra-doc-marketplace`, then `claude plugin update
+ultra-doc@ultra-doc-marketplace`, and restart Claude Code. Update the project
+configuration's version after reviewing the new version's setup instructions.
+See the official [plugin installation guide](https://code.claude.com/docs/en/plugins/install)
+for installation scopes and plugin management.
+
+## Run a local example
+
+This procedure uses a separate plugin checkout and a new example project. Start
+in an empty working directory with Git and Node.js available. Do not reuse an
+existing `ultra-doc-example` directory: the example writes its own guide and
+configuration.
+
+Clone the plugin, run its dependency-free tests, and remember the script path:
+
+```bash
+git clone https://github.com/justfinethanku/ultra-doc.git
+cd ultra-doc
+npm test
+export ULTRA_DOC_SCRIPTS="$PWD/skills/ultra-doc/scripts"
+```
+
+Create the example project beside the checkout:
+
+```bash
+mkdir ../ultra-doc-example
+cd ../ultra-doc-example
+mkdir -p context_for_llms context_for_humans reports src
+printf 'export const answer = 42;\n' > src/example.js
+cat > .ultra-doc.config.json <<'JSON'
+{
+  "setup_level": "standard",
+  "audience": "balanced",
+  "ci_integration": false,
+  "version": "2.0.0"
+}
+JSON
+cat > context_for_llms/guide.md <<'MARKDOWN'
+# Example guide
+
+## Source
+
+`src/example.js` exports the answer constant.
+MARKDOWN
+ULTRA_DOC_AUTO_ACTION=sync node "$ULTRA_DOC_SCRIPTS/orchestrator.mjs"
+```
+
+Expect `Sync Complete`, a successful validation result, and generated
+`SECTIONS.json`, `CODE_POINTERS.json`, `RELATIONSHIPS.json`, `DOC_STATE.json`,
+`VALIDATION.json`, and `INDEX.md` in `context_for_llms/`. Human overviews appear
+in `context_for_humans/`, and a summary appears in `reports/`.
+The example has no Git history, so tracking falls back to file modification
+times and Git-based changelog detection has no changes to record. Git diagnostics
+in that case do not by themselves mean the pipeline failed; check its exit code.
+
+The scripts use **the current working directory as the target project**. Keep
+`ULTRA_DOC_SCRIPTS` pointed at the plugin scripts while changing directories to
+the project you want to maintain. For your own project, create the three output
+directories, configuration, and real source documentation first. Run `.mjs`
+files with `node`, not `bash`.
 
 ## 🛠️ How It Works
 
@@ -89,116 +132,63 @@ The checks protect against symlinks present when a script runs and recheck paths
 after opening; they are not a sandbox against another process concurrently
 renaming directory trees. Run sync in a project you control.
 
-Ultra-Doc runs a self-healing pipeline every time you invoke it:
+### Metadata and validation
 
-```mermaid
-graph TD
-    A[Code Changes] -->|Detected by| B(Ultra-Doc)
-    B --> C{Sync Metadata}
-    C -->|Update| D[Timestamps & Pointers]
-    C -->|Generate| E[LLM Indexes]
-    B --> F{Lint & Fix}
-    F -->|Auto-Fix| G[Headings & Formatting]
-    F -->|Report| H[Warning Digest]
-    B --> I{Dual-Track Sync}
-    I -->|Translate| J[context_for_humans/]
-    B --> K[Generate Changelog]
-```
+A full sync tracks referenced source changes, refreshes changed document
+timestamps, applies formatting fixes, writes the lint digest, builds overlays,
+generates human overviews, checks parity, and writes a changelog and summary.
+Accuracy validation runs after metadata sync. Review the exit code and
+`VALIDATION.json`; the metadata stage's `Sync Complete` message alone does not
+mean the later validation passed.
 
-### The "Dual-Track" Philosophy
+The scripts scan top-level Markdown in `context_for_llms/`. Inline backtick
+references to `.mjs`, `.js`, `.ts`, `.md`, and `.json` files become code pointers.
+The generated pointer file contains a `pointers` object; consumers also accept
+the older flat mapping. For accurate references, use paths relative to the
+**target project**, not the plugin installation.
 
-| Feature | `context_for_llms` | `context_for_humans` |
-| :--- | :--- | :--- |
-| **Audience** | AI Agents (Claude, Copilot) | Developers, Stakeholders |
-| **Format** | Strict Markdown, JSON Overlays | Narrative, Examples, Visuals |
-| **Goal** | Maximize accuracy, minimize tokens | Maximize understanding |
-| **Maintenance** | **Automated** (Source of Truth) | **Generated** (Translation) |
+Source Markdown remains yours to maintain. Generated human overviews can be
+overwritten when their machine documents are newer. Scripts do not automatically
+rewrite factual claims, commit files, or enable CI.
 
----
+## Choose a workflow
 
-## 🚦 Usage
-
-### The One Command
-Everything happens through the single slash command:
+Run the orchestrator from the initialized target project:
 
 ```bash
-/ultra-doc
+ULTRA_DOC_AUTO_ACTION=summary node "$ULTRA_DOC_SCRIPTS/orchestrator.mjs"
 ```
 
-When invoked, Ultra-Doc:
-1.  **Scans** the repo to understand doc health (refreshing `DOC_STATE.json` and priorities).
-2.  **Chooses** the best workflow (full sync, quick lint, validation-only, or reporting) and either auto-runs it (if stale docs are found) or presents an interactive menu.
-3.  **Executes** the selected action end-to-end (full sync now chains `track-code-changes.mjs` → `sync-doc-metadata.mjs` → `validate-accuracy.mjs` so self-healing happens automatically).
-4.  **Reports** progress plus any warnings in plain language.
+Replace `summary` with `sync`, `quick`, or `validate` for other workflows.
+`summary` still refreshes `DOC_STATE.json`; it is not a read-only command.
+Without a valid preset, stale docs trigger full sync. Otherwise a terminal menu
+is shown; without a TTY, its recommended action runs automatically.
 
-#### Decision-Tree Options
+See [Operate and troubleshoot Ultra-Doc](docs/operations.md) for each workflow's
+side effects, output locations, exit behavior, configuration, and recovery.
 
-| Option | What Happens | Auto-run Trigger |
-| :--- | :--- | :--- |
-| **Full Sync** | track code changes → metadata refresh → translation → parity check → lint → accuracy validation → changelog/report | Detected stale docs or `ULTRA_DOC_AUTO_ACTION=sync` |
-| **Quick Lint** | timestamps → autofix → lint digest | `ULTRA_DOC_AUTO_ACTION=quick` |
-| **Validation Only** | `track-code-changes.mjs` + `validate-accuracy.mjs` | `ULTRA_DOC_AUTO_ACTION=validate` |
-| **Summary** | Generates/prints `reports/ultra-doc-summary.md` (with doc health, validation, and parity status) | `ULTRA_DOC_AUTO_ACTION=summary` |
+## Automatic hooks
 
-Set the `ULTRA_DOC_AUTO_ACTION` environment variable (as shown in `hooks.json`) when you need a non-interactive run; otherwise Ultra-Doc will prompt for a choice. Every run refreshes `SECTIONS.json`, `CODE_POINTERS.json`, `RELATIONSHIPS.json`, and `DOC_STATE.json` so Claude always sees the latest context, and the summary report surfaces stale-doc counts, lint numbers, validation accuracy, and translation parity to keep stakeholders aligned.
+The root `hooks.json` is a legacy integration sketch. The plugin does not
+register that file, and a fresh Claude Code 2.1.318 install reports `Hooks (0)`.
+Its `/ultra-doc` shell commands cannot run as executables. Do not rely on
+installation to check commits, edits, prompts, or idle sessions automatically.
+Hook integration is tracked in [FLEET-670](https://linear.app/contentionmedia/issue/FLEET-670).
+Use explicit Node invocations until that integration is implemented and tested.
 
-## 🧪 Quality Guardrails
+## Develop and verify
 
-### File Reference Enforcement
-`skills/ultra-doc/scripts/lint-documentation.mjs` scans every inline code span that looks like a file path (`` `skills/ultra-doc/scripts/generate-report.mjs` ``, etc.) and verifies the file actually exists. Missing files are flagged in the CLI output **and** in `context_for_llms/LINT_WARNINGS.md`, so broken references get caught before they hit the repo.
+Run `npm test` in the plugin checkout. It executes real CLI regression fixtures
+for subprocess safety, metadata sync, pointer consumption, and change tracking.
+There is no build step or configured GitHub Actions workflow. `npm install` is
+not needed for these scripts or tests.
 
-### Validation + Parity Snapshots
-Each lint run appends a "Validation Snapshot" (mirroring `context_for_llms/VALIDATION.json`) and a "Parity Snapshot" that lists any human docs lagging their machine twins. When you run the lightweight quick lint, Ultra-Doc sets `ULTRA_DOC_SKIP_PARITY=1`, logs that the parity check was skipped, and keeps the summary honest.
+Run setup and sync examples in a disposable target project because they write
+files. Inspect `git diff` in a real target project before committing generated
+output. The older `context_for_llms/` and `context_for_humans/` documents include
+historical descriptions; use this README and the operations guide for the
+current executable procedure.
 
-### Reporting at a Glance
-`/ultra-doc` now regenerates `reports/ultra-doc-summary.md` on every run. The metrics table highlights stale-doc counts, overall coverage, validation accuracy, and whether the dual-track translations are still in parity, so non-technical teammates can skim one file instead of spelunking through JSON blobs.
+## License
 
-### Configuration
-Ultra-Doc creates a `.ultra-doc.config.json` in your root. You can customize:
-- `ignore_patterns`: Files to skip.
-- `human_doc_style`: Tone of the generated human docs (e.g., "technical", "friendly").
-
----
-
-## 🔁 Automated Hooks
-
-Ultra-Doc wires itself into Claude Code via `hooks.json` so documentation stays healthy even when humans forget to run `/ultra-doc`.
-
-| Hook | Trigger | Command |
-| --- | --- | --- |
-| PreCommit | Before Claude stages/commits files. | `ULTRA_DOC_AUTO_ACTION=quick /ultra-doc` |
-| SessionStart | When the repo opens in Claude Code. | Print latest `changelog/docs-*.md` entry. |
-| UserPromptSubmit (`deploy|ship|release`) | Risky user prompts. | `ULTRA_DOC_AUTO_ACTION=quick /ultra-doc` |
-| PostToolUse (`write_to_file` touching `context_for_llms`) | Manual edits to machine docs. | `ULTRA_DOC_AUTO_ACTION=sync /ultra-doc` |
-| Idle | User idle while docs have pending work. | `ULTRA_DOC_AUTO_ACTION=summary /ultra-doc` |
-
-Update this table (and `hooks.json`) together whenever hook behavior changes.
-
----
-
-## 📊 Token Economics
-
-Ultra-Doc pays for itself in token savings.
-
-| Query Type | Standard Docs | Ultra-Doc 2.0 | Savings |
-| :--- | :--- | :--- | :--- |
-| **"Explain Auth"** | ~8,000 tokens | ~600 tokens | **92%** |
-| **"Find API Bug"** | ~12,000 tokens | ~1,500 tokens | **87%** |
-| **Full Context** | ~50,000+ tokens | ~4,500 tokens | **91%** |
-
-*Estimates based on a medium-sized repository (50-100 files).*
-
----
-
-## 🤝 Contributing
-
-Found a bug? Want a feature?
-1.  Fork the repo.
-2.  Run `/ultra-doc` to validate your changes.
-3.  Submit a PR.
-
----
-
-<div align="center">
-  <sub>Built with ❤️ for the Claude Code ecosystem.</sub>
-</div>
+MIT. See [LICENSE](LICENSE).
